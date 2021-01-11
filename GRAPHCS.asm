@@ -1,7 +1,7 @@
 ;------------------------------------------
 ; PURPOSE : Test number 1 
 ; SYSTEM  : Turbo Assembler Ideal Mode  
-; AUTHOR  : Omri Hulaty and Aylon Moyal (and Yuval Rosen)
+; AUTHOR  : Omri Hulaty and Aylon Moyal
 ;------------------------------------------
 
 		IDEAL
