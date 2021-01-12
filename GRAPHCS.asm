@@ -12,35 +12,47 @@
 
 		DATASEG
 
-                tile equ 16
-                spacing equ 4
-                step equ 16
-                color db 0fh
-                pos_x dw 0
-                pos_y dw 0
+                tile equ 16 ; 16 * 16
+                spacing equ 4 
+                step equ 16 ; number of pixels the palyer moves
+                color db 0fh 
+                pos_x dw 0 ; player's x value
+                pos_y dw 0 ; player's y value
                 player_print db 1
-                maze db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, "n"
-                     db 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, "n"
-                     db 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, "n"
-                     db 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, "n"
-                     db 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, "n"
-                     db 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, "n"
-                     db 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, "n"
-                     db 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, "n"
-                     db 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, "n"
-                     db 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, "n"
-                     db 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, "n"
-                     db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, "n"
+                maze db 1111B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n" ; (1,2)
+                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 1110B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 1000B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                ; [maze + 24]
+                ; 0000b = 0 = 0000 = 0b
+                    
+                ; 1'st - up, 2'nd - right, 3'rd - down, 4'th - left 
+                ; 1111 all borders
+                ; 0000 no borders
+                ; 0101 borders left and right 
 		CODESEG
 
 proc GetInput
+    ; mov cx, [pos_x]
+    ; mov dx, [pos_y]
+    ; call GetIndex
+    ; mov bx, ax
+
     mov ah, 1
     int 16h
     jz next_k
     ; get value:
     mov ah, 0
     int 16h
-
+    
     ; parse the input:
     cmp ah, 1 ; esc
 	je esc_pressed
@@ -66,12 +78,20 @@ proc GetInput
         jmp Exit
         ret
     up_pressed:
+    ; mov bx, [bx]
+    ; and bx, 1000b
+    ; cmp bx, 1000b
+    ; je next_k
     cmp [pos_y], 10
-    jl next_k
+    jl next_k ; jl = jmp less
 	sub [word pos_y], step
         ret
     down_pressed:
-    cmp [pos_y], 192 - step - tile
+    ;; mov bx, [bx]
+    ;; and bx, 0010b
+    ;; cmp bx, 0010b
+    ;; je next_k
+    cmp [pos_y], 192 - step - tile ; 320(x) * 200(y) but 200 / 16 = 12.5
     jg next_k
 	add [word pos_y], step
     ret
@@ -100,48 +120,99 @@ endp DrawPix
 
 
 
-proc DrawTile
-        push dx
-        push ax
-        push cx
-        cmp [player_print], 1
-        je TilePrint
+proc DrawTile ; get x cord in ax and dx in y cord
+        push bp
+        mov bp, sp 
+        push dx ; bp - 2
+        push ax ; bp - 4 
+        push cx ; bp - 6
+        push bx ; bp - 8
+        cmp [player_print], 1 ; temp
+        je TilePrint ; temp
         shl dx, spacing
         shl ax, spacing
-        jmp TilePrint
         ;------
     TilePrint:
         add dx, tile ; y
         add ax, tile ; x
         mov cx, tile 
+
         Y:
-            push cx
+            push cx ; bp - 10
             mov cx, tile
+             
             X:
-                push cx
+                push cx ; bp - 12
                 mov cx, ax
                 dec cx
                 dec dx
-                call DrawPix
-                inc dx
-                pop cx
-                dec ax
+                ;turn 1 - 16 to 0 - 15
+                Dborder:
+                and bx, 0010b ; bx = 1111, 1111 and 0010 = 0010 
+                cmp bx, 0010b
+                jne Lborder
+                cmp [word bp - 10], tile
+                je PrintPix
+
+                Lborder:
+                mov bx, [bp - 8]
+                and bx, 0001b
+                cmp bx, 0001b
+                jne Uborder
+                cmp [word bp - 12], 1
+                je PrintPix
+
+                Uborder:
+                mov bx, [bp - 8]
+                and bx, 1000b
+                cmp bx, 1000b
+                jne Rborder
+                cmp [word bp - 10], 1
+                je PrintPix
+
+                Rborder:
+                mov bx, [bp - 8]
+                and bx, 0100b
+                cmp bx, 0100b
+                jne NoPrintingArea
+                cmp [word bp - 12], tile
+                je PrintPix
+                jmp NoPrintingArea
+
+                PrintPix:
+                    call DrawPix
+
+                NoPrintingArea:
+                    inc dx
+                    pop cx
+                    dec ax
                 loop X
             dec dx
             add ax, tile
             pop cx
             loop Y
+        pop bx
         pop cx
         pop ax
         pop dx
+        pop bp
         ret
 endp DrawTile
+
+proc GetIndex ; get x in cx and y in dx and returns the index for this cell in maze,
+        mov al, 21
+        push dx
+        mul dx
+        pop dx
+        add ax, cx
+        add ax, offset maze
+        ret
+endp GetIndex
 
 proc DrawMaze
         push cx
         push dx
         push ax 
-        xor cx, cx
         xor ax, ax
         xor dx, dx
         mov cx, 12
@@ -153,18 +224,16 @@ proc DrawMaze
                 MazeX:
                     push cx
                     dec cx
-                    mov al, 21
-                    push dx
-                    mul dx
-                    pop dx
-                    add ax, cx
+                    call GetIndex
                     mov bx, ax
-                    add bx, offset maze
                     mov ax, cx
-                    cmp [byte bx], 1
-                    jne DontFillSpace
+                    cmp [byte bx], 0
+                    je DontFillSpace
                     mov [player_print], 0
+                    push bx
+                    mov bx, [word bx] ; 0001
                     call DrawTile
+                    pop bx
                     mov [player_print], 1
                     jmp DontFillSpace
                     DontFillSpace:
@@ -225,7 +294,7 @@ Start:
         mov ax, @data
         mov ds, ax
 		
-        mov ax, 0A000h
+        mov ax, 0a000h
         mov es, ax      ; ES - Extra Segment now points to the VGA location
 
                         ; Don't forget to view memory map to recollect that address.
@@ -246,17 +315,18 @@ Start:
 
         pop bx
         pop ax
- 
+
 MainLoop:
 
         call GetInput
-
+        
         mov [color], 05h
         call DrawMaze
 
         mov [color], 0fh
         mov ax, [word pos_x]
         mov dx, [word pos_y]
+        mov bx, 1111b
         call DrawTile
 
         mov cx, 1
