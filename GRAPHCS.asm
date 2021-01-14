@@ -16,16 +16,16 @@
                 spacing equ 4 
                 step equ 16 ; number of pixels the palyer moves
                 color db 0fh 
-                pos_x dw 0 ; player's x value
-                pos_y dw 0 ; player's y value
+                pos_x dw 16 ; player's x value
+                pos_y dw 16 ; player's y value
                 player_print db 1
-                maze db 1111B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n" ; (1,2)
-                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 1110B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 1000B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                maze db 1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n" 
+                     db 0,     1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 1110B, 0, 1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 0,     0, 0, 1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 1100B, 0, 0, 0, 1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 0,     0, 0, 0, 0, 1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                     db 1000B, 0, 0, 0, 0, 0, 1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
                      db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
                      db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
                      db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
@@ -41,11 +41,14 @@
 		CODESEG
 
 proc GetInput
-    ; mov cx, [pos_x]
-    ; mov dx, [pos_y]
-    ; call GetIndex
-    ; mov bx, ax
+    mov cx, [pos_x]
+    mov dx, [pos_y]
+    shr cx, 4
+    shr dx, 4
+    call GetIndex
+    mov bx, ax
 
+    xor ax, ax
     mov ah, 1
     int 16h
     jz next_k
@@ -73,39 +76,49 @@ proc GetInput
 	je right_pressed
 	
     ret
+    next_k:
+        ret
     ; load the command codes:
     esc_pressed:
         jmp Exit
         ret
     up_pressed:
-    ; mov bx, [bx]
-    ; and bx, 1000b
-    ; cmp bx, 1000b
-    ; je next_k
+    mov bx, [bx]
+    and bx, 1000B
+    cmp bx, 1000B
+    je border
     cmp [pos_y], 10
     jl next_k ; jl = jmp less
 	sub [word pos_y], step
         ret
     down_pressed:
-    ;; mov bx, [bx]
-    ;; and bx, 0010b
-    ;; cmp bx, 0010b
-    ;; je next_k
+    mov bx, [bx]
+    and bx, 0010B
+    cmp bx, 0010B
+    je border
     cmp [pos_y], 192 - step - tile ; 320(x) * 200(y) but 200 / 16 = 12.5
     jg next_k
 	add [word pos_y], step
     ret
     left_pressed:
+    mov bx, [bx]
+    and bx, 0001B
+    cmp bx, 0001B
+    je border
     cmp [pos_x], 2
     jl next_k
 	sub [word pos_x], step
         ret
     right_pressed:
+    mov bx, [bx]
+    and bx, 0100B
+    cmp bx, 0100B
+    je border
     cmp [pos_x], 320 - step - tile
     jg next_k
 	add [word pos_x], step
         ret
-    next_k:
+    border:
         ret
 endp
 
@@ -200,6 +213,7 @@ proc DrawTile ; get x cord in ax and dx in y cord
 endp DrawTile
 
 proc GetIndex ; get x in cx and y in dx and returns the index for this cell in maze,
+        xor ax, ax
         mov al, 21
         push dx
         mul dx
@@ -316,14 +330,19 @@ Start:
         pop bx
         pop ax
 
+        mov [color], 01h
+
 MainLoop:
 
         call GetInput
         
+
+        push [word color]
         mov [color], 05h
         call DrawMaze
+        pop [word color]
 
-        mov [color], 0fh
+        ; mov [color], 0fh
         mov ax, [word pos_x]
         mov dx, [word pos_y]
         mov bx, 1111b
