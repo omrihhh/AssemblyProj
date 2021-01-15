@@ -4,11 +4,13 @@
 ; AUTHOR  : Omri Hulaty and Aylon Moyal
 ;------------------------------------------
 
+; algorithm details from https://en.wikipedia.org/wiki/Maze_generation_algorithm under Randomized depth-first search / Iterative implementation
+
 		IDEAL
 		
 		MODEL small
 
-		STACK 256
+		STACK 512
 
 		DATASEG
 
@@ -16,21 +18,25 @@
                 spacing equ 4 
                 step equ 16 ; number of pixels the palyer moves
                 color db 0fh 
-                pos_x dw 16 ; player's x value
-                pos_y dw 16 ; player's y value
+                pos_x dw 0 ; player's x value
+                pos_y dw 0 ; player's y value
                 player_print db 1
-                maze db 1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n" 
-                     db 0,     1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 1110B, 0, 1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 0,     0, 0, 1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 1100B, 0, 0, 0, 1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 0,     0, 0, 0, 0, 1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 1000B, 0, 0, 0, 0, 0, 1100B, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
-                     db 0,     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "n"
+                maze db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                     db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                     db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                     db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                     db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                     db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                     db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                     db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                     db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                     db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                     db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                     db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                neighbours db 0
+                neighbour_count db 0
+                neighbours_indexes db 4 dup(0)
+                last_ran db 0
                 ; [maze + 24]
                 ; 0000b = 0 = 0000 = 0b
                     
@@ -39,6 +45,224 @@
                 ; 0000 no borders
                 ; 0101 borders left and right 
 		CODESEG
+
+proc random
+        push cx
+        push ax
+        
+        xor ax,ax            ; xor register to itself same as zeroing register
+        int 1ah              ; Int 1ah/ah=0 get timer ticks since midnight in CX:DX
+        sub ax, cx            ; Use lower 16 bits (in DX) for random value
+        add ax, dx
+        xor dx,dx               
+        div bx               ; Divide dx:ax by bx
+
+        pop ax
+        pop cx
+        ret
+endp random
+
+proc GenerateMaze
+    push dx
+
+    mov bx, 12
+    call random
+    mov al, 21
+    mul dx
+    mov bx, 20
+    call random
+    add ax, dx
+    mov bx, ax
+
+    mov bp, sp
+    push bx
+    or [maze + bx], 10000B
+    GeneretionLoop:
+
+        mov cx, 0
+        mov dx, 1
+	    mov ah, 86h
+	    int 15h
+
+        cmp bp, sp
+        je EndGeneretionLoop1
+        pop cx
+        call getNeighbours
+        cmp [neighbour_count], 0
+        jne HasNeighbours
+        jmp GeneretionLoop
+        EndGeneretionLoop1:
+            jmp EndGeneretionLoop
+        HasNeighbours:
+            push cx
+            xor bx, bx
+            mov bl, [neighbour_count]
+            call random
+            ; mov dx, 0
+            xor ax, ax
+            mov al, [neighbours]
+            xor bx, bx
+            dec bx
+            NIUp:
+                and ax, 1000B
+                cmp ax, 1000B
+                jne NIRight
+                inc bx
+                mov [neighbours_indexes + bx], cl
+                sub [neighbours_indexes + bx], 21
+            NIRight:
+                xor ax, ax
+                mov al, [neighbours]
+                and ax, 0100B
+                cmp ax, 0100B
+                jne NIDown
+                inc bx
+                mov [neighbours_indexes + bx], cl
+                inc [neighbours_indexes + bx]
+            NIDown:
+                xor ax, ax
+                mov al, [neighbours]
+                and ax, 0010B
+                cmp ax, 0010B
+                jne NILeft
+                inc bx
+                mov [neighbours_indexes + bx], cl
+                add [neighbours_indexes + bx], 21
+            NILeft:
+                xor ax, ax
+                mov al, [byte neighbours]
+                and ax, 0001B       
+                cmp ax, 0001B
+                jne EndIndexChosing
+                inc bx
+                mov [neighbours_indexes + bx], cl
+                dec [neighbours_indexes + bx]
+            EndIndexChosing:
+                mov bx, dx
+                mov dl, [byte neighbours_indexes + bx]
+                NBUp:
+                    mov ax, cx
+                    sub ax, 21
+                    cmp dx, ax
+                    jne NBRight
+                    mov bx, cx
+                    and [maze + bx], 10111B
+                    mov bx, dx
+                    and [maze + bx], 11101B
+                NBRight:
+                    mov ax, cx
+                    inc ax
+                    cmp dx, ax
+                    jne NBDown
+                    mov bx, cx
+                    and [maze + bx], 11011B
+                    mov bx, dx
+                    and [maze + bx], 11110B
+                NBDown:
+                    mov ax, cx
+                    add ax, 21
+                    cmp dx, ax
+                    jne NBLeft
+                    mov bx, cx
+                    and [maze + bx], 11101B
+                    mov bx, dx
+                    and [maze + bx], 10111B
+                NBLeft:
+                    mov ax, cx
+                    dec ax
+                    cmp dx, ax
+                    jne EndBorderRemoving
+                    mov bx, cx
+                    and [maze + bx], 11110B
+                    mov bx, dx
+                    and [maze + bx], 11011B
+                EndBorderRemoving:
+                    xor ax, ax
+                    mov bx, dx
+                    add [maze + bx], 10000B
+                    mov bl, [maze + bx]
+                    push dx
+                    jmp GeneretionLoop
+
+    EndGeneretionLoop:
+        pop dx
+        ret 
+endp GenerateMaze
+
+proc getNeighbours ; get cell in cx, returns 
+        push cx
+        push dx
+        push ax
+        push bx
+        xor dx, dx
+        mov [neighbour_count], 0
+        mov [neighbours], 0000B
+        mov ax, cx
+        NUp:
+            cmp ax, 21
+            jl NRight
+            mov bx, cx
+            sub bx, 21
+            add bx, offset maze
+            mov bx, [bx]
+            and bx, 10000B
+            cmp bx, 10000B
+            je NRight
+            inc [neighbour_count]
+            or [neighbours], 1000B
+        NRight:
+            push ax
+            mov bx, 21
+            div bx
+            pop ax
+            cmp dx, 19
+            je NDown
+            mov bx, cx 
+            mov bx, cx
+            inc bx
+            add bx, offset maze
+            mov bx, [bx]
+            and bx, 10000B
+            cmp bx, 10000B
+            je NDown
+            inc [neighbour_count]
+            or [neighbours], 0100B
+        NDown:
+            cmp ax, 230
+            jg NLeft
+            mov bx, cx
+            add bx, 21
+            add bx, offset maze
+            mov bx, [bx]
+            and bx, 10000B
+            cmp bx, 10000B
+            je NLeft
+            inc [neighbour_count]
+            or [neighbours], 0010B
+        NLeft:
+            push ax
+            mov bx, 21
+            div bx
+            pop ax
+            cmp dx, 0
+            je EndNeighbourSearch
+            mov bx, cx
+            dec bx
+            add bx, offset maze
+            mov bx, [bx]
+            and bx, 10000B
+            cmp bx, 10000B
+            je EndNeighbourSearch
+            inc [neighbour_count]
+            or [neighbours], 0001B
+        EndNeighbourSearch:
+            pop bx
+            pop ax
+            pop dx
+            pop cx
+        ret
+endp getNeighbours
+
 
 proc GetInput
     mov cx, [pos_x]
@@ -332,7 +556,19 @@ Start:
 
         mov [color], 01h
 
+        call GenerateMaze
+
 MainLoop:
+
+        push cx
+        mov cx, 1
+        mov dx, 0
+        call GetIndex
+        mov cx, ax
+        sub cx, offset maze
+        call getNeighbours
+        pop cx
+        
 
         call GetInput
         

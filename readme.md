@@ -1,5 +1,5 @@
 ## tasks
-- [ ] maze generation algorithm
+- [x] maze generation algorithm
 - [x] functioning borders
 - [ ] player character
 - [ ] timer
