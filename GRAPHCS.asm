@@ -33,6 +33,25 @@
                      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
                      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
                      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+
+                character db 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, "n" 
+                          db 00, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 00, "n" 
+                          db 00, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 00, "n" 
+                          db 00, 15, 00, 00, 00, 15, 15, 15, 15, 15, 00, 00, 00, 15, 15, 00, "n" 
+                          db 00, 15, 00, 15, 00, 15, 15, 15, 15, 15, 00, 15, 00, 15, 15, 00, "n" 
+                          db 00, 15, 00, 00, 00, 15, 15, 15, 15, 15, 00, 00, 00, 15, 15, 00, "n" 
+                          db 00, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 00, "n" 
+                          db 00, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 00, "n" 
+                          db 00, 15, 15, 00, 00, 00, 00, 00, 00, 00, 00, 00, 15, 15, 15, 00, "n" 
+                          db 00, 15, 15, 15, 00, 04, 04, 04, 04, 04, 00, 15, 15, 15, 15, 00, "n" 
+                          db 00, 15, 15, 15, 15, 00, 04, 04, 04, 00, 15, 15, 15, 15, 15, 00, "n" 
+                          db 00, 15, 15, 15, 15, 15, 00, 00, 00, 15, 15, 15, 15, 15, 15, 00, "n" 
+                          db 00, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 00, "n" 
+                          db 00, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 00, "n" 
+                          db 00, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 00, "n" 
+                          db 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, "n" 
+                        db "$"
+
                 neighbours db 0
                 neighbour_count db 0
                 neighbours_indexes db 4 dup(0)
@@ -45,6 +64,51 @@
                 ; 0000 no borders
                 ; 0101 borders left and right 
 		CODESEG
+
+proc DrawCharacter ; draw a character, offset saved in bx, position in (cx, dx).
+	push dx
+	push bx
+	push ax
+	push cx
+
+	;mov bx, offset character
+	draw_line_loop:
+		mov al, [bx]
+		cmp al, '$'
+		je end_line_loop
+		
+		cmp al, 'n'
+		jne skip_new_line
+		  inc dx
+		  pop cx
+		  push cx
+		  inc bx
+		  jmp draw_line_loop
+
+		cmp al, 't'
+		jne skip_new_line
+		  inc dx
+		  pop cx
+		  push cx
+		  inc bx
+		  jmp draw_line_loop
+
+		skip_new_line:
+        mov [color], al
+		call DrawPix
+		;call DrawTile
+		
+		inc cx
+		inc bx
+		jmp draw_line_loop
+		
+	end_line_loop:
+		pop cx
+		pop ax
+		pop bx
+		pop dx
+		ret
+endp DrawCharacter
 
 proc random
         push cx
@@ -554,35 +618,24 @@ Start:
         pop bx
         pop ax
 
-        mov [color], 01h
+        mov [color], 0fh
 
         call GenerateMaze
 
 MainLoop:
-
-        push cx
-        mov cx, 1
-        mov dx, 0
-        call GetIndex
-        mov cx, ax
-        sub cx, offset maze
-        call getNeighbours
-        pop cx
         
-
         call GetInput
-        
-
-        push [word color]
-        mov [color], 05h
-        call DrawMaze
-        pop [word color]
 
         ; mov [color], 0fh
-        mov ax, [word pos_x]
+        mov cx, [word pos_x]
         mov dx, [word pos_y]
-        mov bx, 1111b
-        call DrawTile
+        mov bx, offset character
+        call DrawCharacter
+
+        push [word color]
+        mov [color], 04h ; maze colour 
+        call DrawMaze
+        pop [word color]
 
         mov cx, 1
         mov dx, 1000
