@@ -1,6 +1,10 @@
 ## tasks
 - [x] maze generation algorithm
 - [x] functioning borders
-- [ ] player character
-- [ ] timer
-- [ ] some sort of level system (optional)
+- [x] character rendering 
+- [ ] player character - Aylon
+- [ ] timer - Both
+- [ ] score system and bonuses - Aylon
+- [x] rewriting the rendering system - Omri
+- [ ] some sort of level system - Omri
+- [ ] enemies (optional) - Both

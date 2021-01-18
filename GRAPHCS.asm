@@ -34,22 +34,22 @@
                      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
                      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
 
-                character db 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, "n" 
-                          db 00, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 00, "n" 
-                          db 00, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 00, "n" 
-                          db 00, 15, 00, 00, 00, 15, 15, 15, 15, 15, 00, 00, 00, 15, 15, 00, "n" 
-                          db 00, 15, 00, 15, 00, 15, 15, 15, 15, 15, 00, 15, 00, 15, 15, 00, "n" 
-                          db 00, 15, 00, 00, 00, 15, 15, 15, 15, 15, 00, 00, 00, 15, 15, 00, "n" 
-                          db 00, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 00, "n" 
-                          db 00, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 00, "n" 
-                          db 00, 15, 15, 00, 00, 00, 00, 00, 00, 00, 00, 00, 15, 15, 15, 00, "n" 
-                          db 00, 15, 15, 15, 00, 04, 04, 04, 04, 04, 00, 15, 15, 15, 15, 00, "n" 
-                          db 00, 15, 15, 15, 15, 00, 04, 04, 04, 00, 15, 15, 15, 15, 15, 00, "n" 
-                          db 00, 15, 15, 15, 15, 15, 00, 00, 00, 15, 15, 15, 15, 15, 15, 00, "n" 
-                          db 00, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 00, "n" 
-                          db 00, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 00, "n" 
-                          db 00, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 00, "n" 
-                          db 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, "n" 
+                character db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 't', "n" 
+                          db 't', 15, 00, 00, 00, 15, 15, 15, 15, 15, 00, 00, 00, 15, 15, 't', "n" 
+                          db 't', 15, 00, 15, 00, 15, 15, 15, 15, 15, 00, 15, 00, 15, 15, 't', "n" 
+                          db 't', 15, 00, 00, 00, 15, 15, 15, 15, 15, 00, 00, 00, 15, 15, 't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 't', "n" 
+                          db 't', 15, 15, 00, 00, 00, 00, 00, 00, 00, 00, 00, 15, 15, 15, 't', "n" 
+                          db 't', 15, 15, 15, 00, 04, 04, 04, 04, 04, 00, 15, 15, 15, 15, 't', "n" 
+                          db 't', 15, 15, 15, 15, 00, 04, 04, 04, 00, 15, 15, 15, 15, 15, 't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 00, 00, 00, 15, 15, 15, 15, 15, 15, 't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 't', "n" 
+                          db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
                         db "$"
 
                 neighbours db 0
@@ -70,30 +70,29 @@ proc DrawCharacter ; draw a character, offset saved in bx, position in (cx, dx).
 	push bx
 	push ax
 	push cx
+    mov bp, cx
 
 	;mov bx, offset character
 	draw_line_loop:
 		mov al, [bx]
 		cmp al, '$'
 		je end_line_loop
+
+        cmp al, 't'
+		jne Newline
+          inc cx
+		  inc bx
+		  jmp draw_line_loop
 		
+        Newline:
 		cmp al, 'n'
 		jne skip_new_line
-		  inc dx
-		  pop cx
-		  push cx
+          mov cx, bp
+          inc dx
 		  inc bx
 		  jmp draw_line_loop
 
-		cmp al, 't'
-		jne skip_new_line
-		  inc dx
-		  pop cx
-		  push cx
-		  inc bx
-		  jmp draw_line_loop
-
-		skip_new_line:
+        skip_new_line:
         mov [color], al
 		call DrawPix
 		;call DrawTile
@@ -333,8 +332,19 @@ proc GetInput
     mov dx, [pos_y]
     shr cx, 4
     shr dx, 4
+    
+    push dx
+    push cx
+    mov [color], 0h
+    mov ax, [word pos_x]
+    mov dx, [word pos_y]
+    call EraseChar
+    pop cx
+    pop dx
+
     call GetIndex
     mov bx, ax
+
 
     xor ax, ax
     mov ah, 1
@@ -500,6 +510,43 @@ proc DrawTile ; get x cord in ax and dx in y cord
         ret
 endp DrawTile
 
+proc EraseChar ; get x cord in ax and dx in y cord
+        push dx
+        push ax 
+        push cx
+        push bx
+        ;------
+    Erase:
+        add dx, tile ; y
+        add ax, tile ; x
+        mov cx, tile 
+        sub dx, 2
+        sub ax, 2
+        sub cx, 2
+        EY:
+            push cx ;
+            mov cx, tile
+            sub cx, 2
+             
+            EX:
+                push cx 
+                mov cx, ax
+                call DrawPix
+                pop cx
+                dec ax
+                loop EX
+            add ax, tile
+            dec dx
+            sub ax, 2
+            pop cx
+            loop EY
+        pop bx
+        pop cx
+        pop ax
+        pop dx
+        ret
+endp EraseChar
+
 proc GetIndex ; get x in cx and y in dx and returns the index for this cell in maze,
         xor ax, ax
         mov al, 21
@@ -549,49 +596,6 @@ proc DrawMaze
         ret 
 endp DrawMaze    
 
-; proc DrawMaze
-;         push bx
-;         push cx
-;         push dx
-
-;         xor dx, dx
-;         xor cx, cx
-
-;         mov [player_print], 0
-
-;         mov bx, offset maze
-;     DrawMazeLoop:
-;         cmp [byte bx], "$"
-;         je FinishMaze
-;         cmp [byte bx], "n"
-;         je NewLine
-;         cmp [byte bx], 0
-;         je Not1
-        
-;         push ax
-;         mov ax, cx
-;         call DrawTile
-;         pop ax
-;         inc cx
-;         inc bx
-;         jmp DrawMazeLoop
-;     Not1:
-;         inc bx
-;         inc cx
-;         jmp DrawMazeLoop
-;     NewLine:
-;         inc dx
-;         xor cx, cx
-;         inc bx
-;         jmp DrawMazeLoop
-;     FinishMaze:
-;         mov [player_print], 1
-;         pop dx
-;         pop cx
-;         pop bx
-;         ret  
-; endp DrawMaze
-
 Start:
         mov ax, @data
         mov ds, ax
@@ -622,6 +626,11 @@ Start:
 
         call GenerateMaze
 
+        push [word color]
+        mov [color], 04h ; maze colour 
+        call DrawMaze
+        pop [word color]
+
 MainLoop:
         
         call GetInput
@@ -632,21 +641,16 @@ MainLoop:
         mov bx, offset character
         call DrawCharacter
 
-        push [word color]
-        mov [color], 04h ; maze colour 
-        call DrawMaze
-        pop [word color]
-
         mov cx, 1
         mov dx, 1000
 	    mov ah, 86h
 	    int 15h
 
-        mov ax,0600h    ;06 TO SCROLL & 00 FOR FULLJ SCREEN
-        mov bh,0h      ;ATTRIBUTE 7 FOR BACKGROUND AND 1 FOR FOREGROUND
-        mov cx,0h    ;STARTING COORDINATES
-        mov dx,184fh    ;ENDING COORDINATES
-        int 10h
+        ; mov ax,0600h    ;06 TO SCROLL & 00 FOR FULLJ SCREEN
+        ; mov bh,0h      ;ATTRIBUTE 7 FOR BACKGROUND AND 1 FOR FOREGROUND
+        ; mov cx,0h    ;STARTING COORDINATES
+        ; mov dx,184fh    ;ENDING COORDINATES
+        ; int 10h
 
         jmp MainLoop
 
