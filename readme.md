@@ -6,5 +6,5 @@
 - [ ] timer - Both
 - [ ] score system and bonuses - Aylon
 - [x] rewriting the rendering system - Omri
-- [ ] some sort of level system - Omri
+- [x] some sort of level system - Omri
 - [ ] enemies (optional) - Both

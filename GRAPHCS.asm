@@ -21,6 +21,7 @@
                 pos_x dw 0 ; player's x value
                 pos_y dw 0 ; player's y value
                 player_print db 1
+                
                 maze db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
                      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
                      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
@@ -35,27 +36,28 @@
                      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
 
                 character db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 't', "n" 
-                          db 't', 15, 00, 00, 00, 15, 15, 15, 15, 15, 00, 00, 00, 15, 15, 't', "n" 
-                          db 't', 15, 00, 15, 00, 15, 15, 15, 15, 15, 00, 15, 00, 15, 15, 't', "n" 
-                          db 't', 15, 00, 00, 00, 15, 15, 15, 15, 15, 00, 00, 00, 15, 15, 't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 't', "n" 
-                          db 't', 15, 15, 00, 00, 00, 00, 00, 00, 00, 00, 00, 15, 15, 15, 't', "n" 
-                          db 't', 15, 15, 15, 00, 04, 04, 04, 04, 04, 00, 15, 15, 15, 15, 't', "n" 
-                          db 't', 15, 15, 15, 15, 00, 04, 04, 04, 00, 15, 15, 15, 15, 15, 't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 00, 00, 00, 15, 15, 15, 15, 15, 15, 't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,               't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,               't', "n" 
+                          db 't', 15, 00, 00, 00, 15, 15, 15, 15, 15, 00, 00, 00, 15, 15,               't', "n" 
+                          db 't', 15, 00, 15, 00, 15, 15, 15, 15, 15, 00, 15, 00, 15, 15,               't', "n" 
+                          db 't', 15, 00, 00, 00, 15, 15, 15, 15, 15, 00, 00, 00, 15, 15,               't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,               't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,               't', "n" 
+                          db 't', 15, 15, 00, 00, 00, 00, 00, 00, 00, 00, 00, 15, 15, 15,               't', "n" 
+                          db 't', 15, 15, 15, 00, 04, 04, 04, 04, 04, 00, 15, 15, 15, 15,               't', "n" 
+                          db 't', 15, 15, 15, 15, 00, 04, 04, 04, 00, 15, 15, 15, 15, 15,               't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 00, 00, 00, 15, 15, 15, 15, 15, 15,               't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,               't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,               't', "n" 
+                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,               't', "n" 
                           db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
                         db "$"
 
                 neighbours db 0
                 neighbour_count db 0
                 neighbours_indexes db 4 dup(0)
-                last_ran db 0
+                time db 10
+                last_time db 0
                 ; [maze + 24]
                 ; 0000b = 0 = 0000 = 0b
                     
@@ -72,6 +74,7 @@ proc DrawCharacter ; draw a character, offset saved in bx, position in (cx, dx).
 	push cx
     mov bp, cx
 
+    xor ax, ax
 	;mov bx, offset character
 	draw_line_loop:
 		mov al, [bx]
@@ -126,6 +129,8 @@ proc random
 endp random
 
 proc GenerateMaze
+    call EraseMaze
+
     push dx
 
     mov bx, 12
@@ -547,6 +552,24 @@ proc EraseChar ; get x cord in ax and dx in y cord
         ret
 endp EraseChar
 
+proc EraseMaze 
+        push bx
+        mov bx, offset maze
+        add bx, 251
+        ;------
+        EraseMazeLoop:
+        cmp [byte bx], 'n'
+        je move
+        mov [byte bx], 15
+        move:
+        dec bx
+        cmp bx , offset maze - 1
+        jne EraseMazeLoop
+        
+        pop bx
+        ret
+endp EraseMaze
+
 proc GetIndex ; get x in cx and y in dx and returns the index for this cell in maze,
         xor ax, ax
         mov al, 21
@@ -624,6 +647,7 @@ Start:
 
         mov [color], 0fh
 
+        xor ax, ax
         call GenerateMaze
 
         push [word color]
@@ -632,10 +656,36 @@ Start:
         pop [word color]
 
 MainLoop:
+        mov ah,2ch
+	    int 21h
+        cmp dh, [last_time]
+        je Run
+        mov [last_time], dh
+        dec [time]
         
+        cmp [time], 0
+        jne Run
+
+        mov [time], 10
+
+        mov ax,0600h    ;06 TO SCROLL & 00 FOR FULLJ SCREEN
+        mov bh,0h      ;ATTRIBUTE 7 FOR BACKGROUND AND 1 FOR FOREGROUND
+        mov cx,0h    ;STARTING COORDINATES
+        mov dx,184fh    ;ENDING COORDINATES
+        int 10h
+
+        mov [pos_x], 0
+        mov [pos_y], 0
+        xor ax, ax
+        call GenerateMaze
+
+        mov [color], 04h ; maze colour 
+        call DrawMaze
+    
+        ; mov [color], 0fh
+        Run:
         call GetInput
 
-        ; mov [color], 0fh
         mov cx, [word pos_x]
         mov dx, [word pos_y]
         mov bx, offset character
