@@ -2,10 +2,10 @@
 - [x] Maze generation algorithm
 - [x] Functioning borders
 - [x] Character rendering
-- [x] Rewriting the rendering system - Omri 
+- [x] Rewriting the rendering system - Omri
+- [x] Some sort of level system - Omri
 - [ ] Cooler player character - Aylon
 - [ ] Timer - Both
 - [ ] Score system and bonuses - Aylon
-- [ ] Some sort of level system - Omri
 - [ ] Different types of bonuses, changes in color & points (optional) - Aylon
 - [ ] Enemies (optional) - Both
