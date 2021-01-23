@@ -1,10 +1,10 @@
 # Recursive Backtracking Assembly Game
-**random** maze solving game generated with **recursive backtracking** implemented in **Assembly** for our **finle project** for our Assembly course
+**random** maze solving game generated with **recursive backtracking** implemented in **Assembly** for our **final project** for our Assembly course
 
 ## Photos
-![Maze1](assets\maze.jpg)
-![Maze1](assets\maze2.jpg)
-![Maze1](assets\maze3.jpg)
+![](assets/maze.jpg)
+![](assets/maze2.jpg)
+![](assets/maze3.jpg)
 
 ## Tasks
 - [x] ~~Character rendering~~ 
