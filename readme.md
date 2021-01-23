@@ -1,12 +1,14 @@
 ## tasks
-- [x] character rendering 
+- [x] Character rendering 
 - [x] Maze generation algorithm
 - [x] Functioning borders
 - [x] Character rendering
 - [x] Rewriting the rendering system - Omri
 - [x] Some sort of level system - Omri
+- [x] Score system - Aylon
+- [x] Timer - Both
 - [ ] Better player character - Aylon
-- [ ] Score system and bonuses - Aylon
-- [ ] Different types of bonuses, changes in color & points (optional) - Aylon
-- [ ] Timer - Both
+- [ ] Better bonus icon - Aylon
+- [ ] Code cleanup - Aylon
 - [ ] Enemies (optional) - Both
+- [ ] Bonuses (optional) - Both

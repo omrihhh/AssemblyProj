@@ -1,7 +1,7 @@
 ;------------------------------------------
 ; PURPOSE : Test number 1 
 ; SYSTEM  : Turbo Assembler Ideal Mode  
-; AUTHOR  : Omri Hulaty and Aylon Moyal
+; AUTHOR  : Omri Hulaty and Aylon Moyal (and Yuval Rosen)
 ;------------------------------------------
 
 ; algorithm details from https://en.wikipedia.org/wiki/Maze_generation_algorithm under Randomized depth-first search / Iterative implementation
@@ -36,36 +36,145 @@
                      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
 
                 character db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,               't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,               't', "n" 
-                          db 't', 15, 00, 00, 00, 15, 15, 15, 15, 15, 00, 00, 00, 15, 15,               't', "n" 
-                          db 't', 15, 00, 15, 00, 15, 15, 15, 15, 15, 00, 15, 00, 15, 15,               't', "n" 
-                          db 't', 15, 00, 00, 00, 15, 15, 15, 15, 15, 00, 00, 00, 15, 15,               't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,               't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,               't', "n" 
-                          db 't', 15, 15, 00, 00, 00, 00, 00, 00, 00, 00, 00, 15, 15, 15,               't', "n" 
-                          db 't', 15, 15, 15, 00, 04, 04, 04, 04, 04, 00, 15, 15, 15, 15,               't', "n" 
-                          db 't', 15, 15, 15, 15, 00, 04, 04, 04, 00, 15, 15, 15, 15, 15,               't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 00, 00, 00, 15, 15, 15, 15, 15, 15,               't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,               't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,               't', "n" 
-                          db 't', 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,               't', "n" 
+                          db 't', 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 't', "n" 
+                          db 't', 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 't', "n" 
+                          db 't', 15 , 00 , 00 , 00 , 15 , 15 , 15 , 15 , 15 , 00 , 00 , 00 , 15 , 15 , 't', "n" 
+                          db 't', 15 , 00 , 15 , 00 , 15 , 15 , 15 , 15 , 15 , 00 , 15 , 00 , 15 , 15 , 't', "n" 
+                          db 't', 15 , 00 , 00 , 00 , 15 , 15 , 15 , 15 , 15 , 00 , 00 , 00 , 15 , 15 , 't', "n" 
+                          db 't', 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 't', "n" 
+                          db 't', 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 't', "n" 
+                          db 't', 15 , 15 , 00 , 00 , 00 , 00 , 00 , 00 , 00 , 00 , 00 , 15 , 15 , 15 , 't', "n" 
+                          db 't', 15 , 15 , 15 , 00 , 04 , 04 , 04 , 04 , 04 , 00 , 15 , 15 , 15 , 15 , 't', "n" 
+                          db 't', 15 , 15 , 15 , 15 , 00 , 04 , 04 , 04 , 00 , 15 , 15 , 15 , 15 , 15 , 't', "n" 
+                          db 't', 15 , 15 , 15 , 15 , 15 , 00 , 00 , 00 , 15 , 15 , 15 , 15 , 15 , 15 , 't', "n" 
+                          db 't', 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 't', "n" 
+                          db 't', 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 't', "n" 
+                          db 't', 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 15 , 't', "n" 
                           db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-                        db "$"
+                          db "$"
+
+                bonus     db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
+                          db 't', 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 't', "n" 
+                          db 't', 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 't', "n" 
+                          db 't', 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 't', "n" 
+                          db 't', 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 't', "n" 
+                          db 't', 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 't', "n" 
+                          db 't', 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 't', "n" 
+                          db 't', 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 't', "n" 
+                          db 't', 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 't', "n" 
+                          db 't', 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 't', "n" 
+                          db 't', 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 't', "n" 
+                          db 't', 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 't', "n" 
+                          db 't', 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 't', "n" 
+                          db 't', 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 't', "n" 
+                          db 't', 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 't', "n" 
+                          db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
+                          db "$"
 
                 neighbours db 0
                 neighbour_count db 0
                 neighbours_indexes db 4 dup(0)
-                time db 10
+                time db 30
                 last_time db 0
+                total_time db 0
+                level db 1
+                end_message db 'Your time (sec): ', '$'
+                time_message db 'time(sec):', '$'
                 ; [maze + 24]
                 ; 0000b = 0 = 0000 = 0b
                     
                 ; 1'st - up, 2'nd - right, 3'rd - down, 4'th - left 
                 ; 1111 all borders
                 ; 0000 no borders
-                ; 0101 borders left and right 
+                ; 0101 borders left and right
+                XValue dw ?
+                YValue dw ?
 		CODESEG
+
+proc checkCollision
+    push cx
+    mov cx, [pos_x]
+    cmp cx, [XValue]
+    jne notColliding
+    mov cx, [pos_y]
+    cmp cx, [YValue]
+    jne notColliding
+    
+    mov [time], 1
+    notColliding:
+        pop cx
+        ret
+endp checkCollision
+
+proc PrintText ; Print a variable to screen, offset saved in bp, dh - row, dl - column, bl - color.
+	push ax
+	push bx
+	push cx
+
+	mov ah, 02h
+	mov bh, 0
+	
+	int 10h
+	
+	; mov ah, 13H ; WRITE THE STRING
+	; mov al, 01H; ATTRIBUTE IN BL, movE CURSOR TO THAT POSITION
+	; mov bh, 0
+	;mov bl, 5 ;GREEN
+	; mov cx, 12
+	; ;mov cx, 7 ; LENGTH OF THE STRING
+	; int 10H
+	
+	pop cx
+	pop bx
+	pop ax
+
+	ret
+endp PrintText
+
+; proc GetLength  ; Get length of variable, where its offset is on bp. (mov bp, offset var)
+; 	push bx
+; 	mov bx, bp
+; 	xor cx, cx
+; 	length_loop:
+; 		cmp [word ptr bx], "$"
+; 		je end_length_loop
+		
+; 		inc bx
+; 		inc cx
+; 		jmp length_loop
+
+; 	end_length_loop:
+; 		pop bx
+; 		ret
+; endp
+
+proc randomXValue
+    mov AH, 00h  ; interrupts to get system time        
+   	int 1Ah      ; CX:DX now hold number of clock ticks since midnight      
+
+	mov  ax, dx
+	xor  dx, dx
+	mov  cx, 16  
+	div  cx
+    add dx, 4
+    shl dx, 4
+    mov [XValue], dx
+    ret
+endp randomXValue
+
+proc randomYValue
+    mov AH, 00h  ; interrupts to get system time        
+   	int 1Ah      ; CX:DX now hold number of clock ticks since midnight      
+
+	mov  ax, dx
+	xor  dx, dx
+	mov  cx, 8  
+	div  cx
+    add  dx, 4
+    shl dx, 4
+    mov [YValue], dx
+    ret
+endp randomYValue
 
 proc DrawCharacter ; draw a character, offset saved in bx, position in (cx, dx).
 	push dx
@@ -619,6 +728,57 @@ proc DrawMaze
         ret 
 endp DrawMaze    
 
+proc print           
+      
+    ;initilize count 
+    mov cx,0 
+    mov dx,0 
+    label1: 
+        ; if ax is zero 
+        cmp ax,0 
+        je print1       
+          
+        ;initilize bx to 10 
+        mov bx,10         
+          
+        ; extract the last digit 
+        div bx                   
+          
+        ;push it in the stack 
+        push dx               
+          
+        ;increment the count 
+        inc cx               
+          
+        ;set dx to 0  
+        xor dx,dx 
+        jmp label1 
+    print1: 
+        ;check if count  
+        ;is greater than zero 
+        cmp cx,0 
+        je endprint
+          
+        ;pop the top of stack 
+        pop dx 
+          
+        ;add 48 so that it  
+        ;represents the ASCII 
+        ;value of digits 
+        add dx, '0' 
+          
+        ;interuppt to print a 
+        ;character 
+        mov ah,02h 
+        int 21h 
+          
+        ;decrease the count 
+        dec cx 
+        jmp print1 
+    endprint: 
+        ret 
+endp print 
+
 Start:
         mov ax, @data
         mov ds, ax
@@ -655,6 +815,14 @@ Start:
         call DrawMaze
         pop [word color]
 
+        
+        call randomXValue
+        call randomYValue
+        mov cx, [XValue]
+        mov dx, [YValue]
+        mov bx, offset bonus
+        call DrawCharacter
+
 MainLoop:
         mov ah,2ch
 	    int 21h
@@ -662,11 +830,31 @@ MainLoop:
         je Run
         mov [last_time], dh
         dec [time]
+        inc [total_time]
         
+        mov bp, offset time_message
+        mov dl, 11
+        mov dh, 24
+        call printText
+
+        lea dx, [end_message]  
+        mov ah,09h 
+        int 21h          
+
+        xor ax, ax
+        mov al, [total_time]
+        call print
+
+
+
+;Print a variable to screen, offset saved in bp, dh - row, dl - column, bl - color. cx - text length
         cmp [time], 0
         jne Run
 
-        mov [time], 10
+        inc [level]
+        cmp [level], 6
+        je Exit
+        mov [time], 30
 
         mov ax,0600h    ;06 TO SCROLL & 00 FOR FULLJ SCREEN
         mov bh,0h      ;ATTRIBUTE 7 FOR BACKGROUND AND 1 FOR FOREGROUND
@@ -682,9 +870,16 @@ MainLoop:
         mov [color], 04h ; maze colour 
         call DrawMaze
     
+        call randomXValue
+        call randomYValue
+        mov cx, [XValue]
+        mov dx, [YValue]
+        mov bx, offset bonus
+        call DrawCharacter
         ; mov [color], 0fh
         Run:
         call GetInput
+        call checkCollision
 
         mov cx, [word pos_x]
         mov dx, [word pos_y]
@@ -706,7 +901,18 @@ MainLoop:
 
 Exit:
         mov ax, 3h
-        int 10h 
+        int 10h
+        lea dx, [end_message]  
+        mov ah,09h 
+        int 21h  
+        xor ax, ax
+        mov al, [total_time]
+        call print
+        mov cx, 1000h
+        mov dx, 1000h
+	    mov ah, 86h
+	    int 15h
         mov ax, 4C00h
         int 21h
+
 		END start
