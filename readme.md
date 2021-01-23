@@ -1,4 +1,4 @@
-## tasks
+## Tasks
 - [x] Character rendering 
 - [x] Maze generation algorithm
 - [x] Functioning borders
