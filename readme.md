@@ -7,8 +7,8 @@
 - [x] Some sort of level system - Omri
 - [x] Score system - Aylon
 - [x] Timer - Both
+- [x] Code cleanup - Aylon
 - [ ] Better player character - Aylon
 - [ ] Better bonus icon - Aylon
-- [ ] Code cleanup - Aylon
 - [ ] Enemies (optional) - Both
 - [ ] Bonuses (optional) - Both
