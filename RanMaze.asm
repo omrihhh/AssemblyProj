@@ -1,5 +1,6 @@
 ;------------------------------------------
-; Purpose: Random Mazes Game.
+; Purpose: Recursive Backtracking Assembly Game.
+; Description: Random maze solving game generated with recursive backtracking implemented in Assembly.
 ; System: Turbo Assembler Ideal Mode.
 ; Author: Omri Hulaty and Aylon Moyal.
 ;------------------------------------------
@@ -10,7 +11,7 @@ IDEAL
 
 MODEL small
 
-STACK 512
+STACK 100h
 
 DATASEG
 
@@ -57,7 +58,7 @@ DATASEG
                 db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
                 db "$"
 
-    bonus       db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
+    finish      db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
                 db 't', 00h, 00h, 00h, 00h, 06h, 06h, 06h, 06h, 06h, 06h, 00h, 00h, 00h, 00h, 't', "n" 
                 db 't', 00h, 00h, 06h, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 06h, 00h, 00h, 't', "n" 
                 db 't', 00h, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 00h, 't', "n" 
@@ -75,20 +76,85 @@ DATASEG
                 db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
                 db "$"
 
+    peedB       db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
+                db 't', 00h, 00h, 00h, 00h, 06h, 06h, 06h, 06h, 06h, 06h, 00h, 00h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 06h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 06h, 00h, 00h, 't', "n" 
+                db 't', 00h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 00h, 't', "n" 
+                db 't', 00h, 06h, 01h, 01h, 01h, 06h, 06h, 06h, 06h, 01h, 01h, 01h, 06h, 00h, 't', "n" 
+                db 't', 06h, 01h, 01h, 01h, 06h, 01h, 01h, 01h, 01h, 06h, 01h, 01h, 01h, 06h, 't', "n" 
+                db 't', 06h, 01h, 01h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 01h, 01h, 06h, 't', "n" 
+                db 't', 06h, 01h, 01h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 01h, 01h, 06h, 't', "n" 
+                db 't', 06h, 01h, 01h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 01h, 01h, 06h, 't', "n" 
+                db 't', 06h, 01h, 01h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 01h, 01h, 06h, 't', "n" 
+                db 't', 06h, 01h, 01h, 01h, 06h, 01h, 01h, 01h, 01h, 06h, 01h, 01h, 01h, 06h, 't', "n" 
+                db 't', 00h, 06h, 01h, 01h, 01h, 06h, 06h, 06h, 06h, 01h, 01h, 01h, 06h, 00h, 't', "n" 
+                db 't', 00h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 00h, 't', "n" 
+                db 't', 00h, 00h, 06h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 06h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 00h, 00h, 06h, 06h, 06h, 06h, 06h, 06h, 00h, 00h, 00h, 00h, 't', "n" 
+                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
+                db "$"
+    
+    Minustime   db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
+                db 't', 00h, 00h, 00h, 00h, 06h, 06h, 06h, 06h, 06h, 06h, 00h, 00h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 06h, 06h, 28h, 28h, 28h, 28h, 28h, 28h, 06h, 06h, 00h, 00h, 't', "n" 
+                db 't', 00h, 06h, 28h, 28h, 28h, 28h, 28h, 28h, 28h, 28h, 28h, 28h, 06h, 00h, 't', "n" 
+                db 't', 00h, 06h, 28h, 28h, 28h, 06h, 06h, 06h, 06h, 28h, 28h, 28h, 06h, 00h, 't', "n" 
+                db 't', 06h, 28h, 28h, 28h, 06h, 28h, 28h, 28h, 28h, 06h, 28h, 28h, 28h, 06h, 't', "n" 
+                db 't', 06h, 28h, 28h, 06h, 28h, 28h, 28h, 28h, 28h, 28h, 06h, 28h, 28h, 06h, 't', "n" 
+                db 't', 06h, 28h, 28h, 06h, 28h, 28h, 28h, 28h, 28h, 28h, 06h, 28h, 28h, 06h, 't', "n" 
+                db 't', 06h, 28h, 28h, 06h, 28h, 28h, 28h, 28h, 28h, 28h, 06h, 28h, 28h, 06h, 't', "n" 
+                db 't', 06h, 28h, 28h, 06h, 28h, 28h, 28h, 28h, 28h, 28h, 06h, 28h, 28h, 06h, 't', "n" 
+                db 't', 06h, 28h, 28h, 28h, 06h, 28h, 28h, 28h, 28h, 06h, 28h, 28h, 28h, 06h, 't', "n" 
+                db 't', 00h, 06h, 28h, 28h, 28h, 06h, 06h, 06h, 06h, 28h, 28h, 28h, 06h, 00h, 't', "n" 
+                db 't', 00h, 06h, 28h, 28h, 28h, 28h, 28h, 28h, 28h, 28h, 28h, 28h, 06h, 00h, 't', "n" 
+                db 't', 00h, 00h, 06h, 06h, 28h, 28h, 28h, 28h, 28h, 28h, 06h, 06h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 00h, 00h, 06h, 06h, 06h, 06h, 06h, 06h, 00h, 00h, 00h, 00h, 't', "n" 
+                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
+                db "$"
+        
+    Plustime    db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
+                db 't', 00h, 00h, 00h, 00h, 06h, 06h, 06h, 06h, 06h, 06h, 00h, 00h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 06h, 06h, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 06h, 06h, 00h, 00h, 't', "n" 
+                db 't', 00h, 06h, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 06h, 00h, 't', "n" 
+                db 't', 00h, 06h, 2fh, 2fh, 2fh, 06h, 06h, 06h, 06h, 2fh, 2fh, 2fh, 06h, 00h, 't', "n" 
+                db 't', 06h, 2fh, 2fh, 2fh, 06h, 2fh, 2fh, 2fh, 2fh, 06h, 2fh, 2fh, 2fh, 06h, 't', "n" 
+                db 't', 06h, 2fh, 2fh, 06h, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 06h, 2fh, 2fh, 06h, 't', "n" 
+                db 't', 06h, 2fh, 2fh, 06h, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 06h, 2fh, 2fh, 06h, 't', "n" 
+                db 't', 06h, 2fh, 2fh, 06h, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 06h, 2fh, 2fh, 06h, 't', "n" 
+                db 't', 06h, 2fh, 2fh, 06h, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 06h, 2fh, 2fh, 06h, 't', "n" 
+                db 't', 06h, 2fh, 2fh, 2fh, 06h, 2fh, 2fh, 2fh, 2fh, 06h, 2fh, 2fh, 2fh, 06h, 't', "n" 
+                db 't', 00h, 06h, 2fh, 2fh, 2fh, 06h, 06h, 06h, 06h, 2fh, 2fh, 2fh, 06h, 00h, 't', "n" 
+                db 't', 00h, 06h, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 06h, 00h, 't', "n" 
+                db 't', 00h, 00h, 06h, 06h, 2fh, 2fh, 2fh, 2fh, 2fh, 2fh, 06h, 06h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 00h, 00h, 06h, 06h, 06h, 06h, 06h, 06h, 00h, 00h, 00h, 00h, 't', "n" 
+                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
+                db "$"
+
     neighbours db 0
     neighbour_count db 0
     neighbours_indexes db 4 dup(0)
 
     time db 25
     last_time db 0
-    total_time db 0
+    total_time dw 0
     level db 1
     end_message db 'Your time (sec): ', '$'
     time_message db 'time(sec):', '$'
-    lvl_message db ' - level: /5', '$'
+    lvl_message db ' - level:@/5', '$'
 
-    XValue dw ?
-    YValue dw ?
+    XValue dw 321
+    YValue dw 201
+
+    SXValue dw 321
+    SYValue dw 201
+
+    PTXValue dw 321
+    PTYValue dw 201
+
+    MTXValue dw 321
+    MTYValue dw 201
+
+    speed db, 1
 
 
 CODESEG
@@ -96,14 +162,62 @@ CODESEG
 
 proc CheckCollision
     push cx
+
     mov cx, [pos_x]
     cmp cx, [XValue]
-    jne NotColliding
+    jne NotCollidingF
 
     mov cx, [pos_y]
     cmp cx, [YValue]
-    jne NotColliding
+    jne NotCollidingF
     mov [time], 1
+
+    NotCollidingF:
+    mov cx, [pos_x]
+    cmp cx, [SXValue]
+    jne NotCollidingS
+
+    mov cx, [pos_y]
+    cmp cx, [SYValue]
+    jne NotCollidingS
+    mov [speed], 0
+    mov ah, 03h 
+    mov al, 05h
+    mov bh, 00h
+    mov bl, 06h
+    int 16h
+    mov [SXValue], 321
+    mov [SYValue], 201
+
+    NotCollidingS:
+    mov cx, [pos_x]
+    cmp cx, [MTXValue]
+    jne NotCollidingM
+
+    mov cx, [pos_y]
+    cmp cx, [MTYValue]
+    jne NotCollidingM
+    mov cx, 5
+    MTLoop:
+        sub [total_time], 1
+        cmp [total_time], 0
+        je FMT
+        loop MTLoop
+    FMT:
+        mov [MTXValue],  321
+        mov [MTYValue],  201
+
+    NotCollidingM:
+    mov cx, [pos_x]
+    cmp cx, [PTXValue]
+    jne NotColliding
+
+    mov cx, [pos_y]
+    cmp cx, [PTYValue]
+    jne NotColliding
+    add [total_time], 5
+    mov [PTXValue], 321
+    mov [PTYValue], 201
 
     NotColliding:
         pop cx
@@ -129,34 +243,39 @@ endp MovCrsr
 
 
 proc RandomXValue
-    mov ah, 00h  ; interrupts to get system time.
-   	int 1Ah      ; cx:dx now hold number of clock ticks since midnight.
-
-	mov  ax, dx
-	xor  dx, dx
-	mov  cx, 16  
-	div  cx
-    add dx, 4
-    shl dx, 4
-    mov [XValue], dx
-    ret
-endp RandomXValue
-
-
-proc RandomYValue
+    push bx
+    push cx
     mov AH, 00h  ; interrupts to get system time.
    	int 1Ah      ; cx:dx now hold number of clock ticks since midnight.
 
 	mov  ax, dx
 	xor  dx, dx
-	mov  cx, 8  
+    mov cx, 20
+    sub cx, bx
 	div  cx
-    add  dx, 4
-    shl dx, 4
-    mov [YValue], dx
+    add  dx, bx
+    shl  dx, 4
+    pop  cx
+    push bx
+    ret
+endp RandomXValue
+
+
+proc RandomYValue
+    push cx
+    mov AH, 00h  ; interrupts to get system time.
+   	int 1Ah      ; cx:dx now hold number of clock ticks since midnight.
+
+	mov  ax, dx
+	xor  dx, dx
+    mov cx, 12
+    sub cx, bx
+	div  cx
+    add  dx, bx
+    shl  dx, 4
+    pop  cx
     ret
 endp RandomYValue
-
 
 ; draw a character: offset saved in bx, position in (cx, dx).
 proc DrawCharacter
@@ -820,7 +939,7 @@ proc PrintInfo
     int 21h          
 
     xor ax, ax
-    mov al, [total_time]
+    mov ax, [total_time]
     call Print
 
     mov bl, [level]
@@ -833,6 +952,103 @@ proc PrintInfo
     pop bx
     ret
 endp PrintInfo
+
+
+proc GenerateTokens
+    push bx
+    xor bx, bx
+    mov bl, [level]
+    add bx, 3
+
+    cmp [time], 23
+    jne MT
+    call RandomXValue
+    mov cx, dx
+    mov [SXValue], cx
+    call RandomYValue
+    mov [SYValue], dx
+    mov bx, offset peedB
+    call DrawCharacter
+
+    MT:
+    cmp [time], 20
+    jne PT
+    call RandomXValue
+    mov cx, dx
+    mov [MTXValue], cx
+    call RandomYValue
+    mov [MTYValue], dx
+    mov bx, offset Minustime
+    call DrawCharacter
+
+    PT:
+    cmp [time], 12
+    jne FG
+    call RandomXValue
+    mov cx, dx
+    mov [PTXValue], cx
+    call RandomYValue
+    mov [PTYValue], dx
+    mov bx, offset Plustime
+    call DrawCharacter
+    FG:
+    pop bx
+    ret
+
+endp GenerateTokens
+
+proc ResetMaze
+    mov [time], 25
+
+    mov ax, 0600h    ; 06 to scroll & 00 for full screen.
+    mov bh, 0h       ; attribute 7 for background and 1 for foreground.
+    mov cx, 0h       ; starting coordinates.
+    mov dx, 184fh    ; ending coordinates.
+    int 10h
+
+    mov [XValue], 321
+    mov [YValue], 201
+ 
+    mov [SXValue], 321
+    mov [SYValue], 201
+ 
+    mov [PTXValue], 321
+    mov [PTYValue], 201
+ 
+    mov [MTXValue],  321
+    mov [MTYValue],  201
+
+    mov ah, 03h 
+    mov al, 05h
+    mov bh, 00h
+    mov bl, 08h
+    int 16h
+
+    mov [pos_x], 0
+    mov [pos_y], 0
+    xor ax, ax
+    call GenerateMaze
+
+    mov [color], 15    ; maze color.
+    call DrawMaze
+    
+    xor bx, bx
+    push bx
+    mov bl, [level]
+    add bx, 3
+    call RandomXValue
+    mov cx, dx
+    mov [XValue], dx
+    call RandomYValue
+    mov [YValue], dx
+    mov bx, offset finish
+    call DrawCharacter
+
+    mov [speed], 1
+
+    pop bx
+    ret
+endp ResetMaze
 
 Start:
     mov ax, @data
@@ -870,13 +1086,18 @@ Start:
     call DrawMaze
     pop [word color]
 
-        
+    xor bx, bx
+    push bx
+    mov bl, [level]
+    add bx, 3
     call RandomXValue
+    mov cx, dx
+    mov [XValue], dx
     call RandomYValue
-    mov cx, [XValue]
-    mov dx, [YValue]
-    mov bx, offset bonus
+    mov [YValue], dx
+    mov bx, offset finish
     call DrawCharacter
+    pop bx
 
 MainLoop:
     mov ah,2ch
@@ -888,7 +1109,7 @@ MainLoop:
     inc [total_time]
         
     call PrintInfo
-
+    call GenerateTokens
     ; print a variable to screen: offset saved in bp, dh - row, dl - column, bl - color. cx - text length.
     cmp [time], 0
     jne Run
@@ -896,28 +1117,7 @@ MainLoop:
     inc [level]
     cmp [level], 6
     je Exit
-    mov [time], 25
-
-    mov ax, 0600h    ; 06 to scroll & 00 for full screen.
-    mov bh, 0h       ; attribute 7 for background and 1 for foreground.
-    mov cx, 0h       ; starting coordinates.
-    mov dx, 184fh    ; ending coordinates.
-    int 10h
-
-    mov [pos_x], 0
-    mov [pos_y], 0
-    xor ax, ax
-    call GenerateMaze
-
-    mov [color], 15    ; maze color.
-    call DrawMaze
-    
-    call RandomXValue
-    call RandomYValue
-    mov cx, [XValue]
-    mov dx, [YValue]
-    mov bx, offset bonus
-    call DrawCharacter
+    call ResetMaze
 
     Run:
         call GetInput
@@ -928,7 +1128,8 @@ MainLoop:
         mov bx, offset character
         call DrawCharacter
 
-        mov cx, 1
+        xor cx, cx
+        mov cl, [speed]
         mov dx, 1000
 	    mov ah, 86h
 	    int 15h
@@ -942,7 +1143,8 @@ Exit:
     mov ah,09h 
     int 21h  
     xor ax, ax
-    mov al, [total_time]
+    inc [total_time]
+    mov ax, [total_time]
     call Print
     mov cx, 1000h
     mov dx, 1000h
