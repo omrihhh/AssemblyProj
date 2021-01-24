@@ -957,9 +957,7 @@ endp PrintInfo
 proc GenerateTokens
     push bx
     xor bx, bx
-    mov bl, [level]
-    add bx, 3
-
+    mov bx, 1
     cmp [time], 23
     jne MT
     call RandomXValue
@@ -982,7 +980,7 @@ proc GenerateTokens
     call DrawCharacter
 
     PT:
-    cmp [time], 12
+    cmp [time], 18
     jne FG
     call RandomXValue
     mov cx, dx
