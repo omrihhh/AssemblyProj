@@ -22,19 +22,19 @@ DATASEG
     pos_y dw 0 ; player's y value.
     player_print db 1
             
-    maze    db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-            db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-            db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-            db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-            db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-            db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-            db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-            db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-            db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-            db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-            db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-            db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-            db "$"
+    maze        db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+                db "$"
     ; 15h = 1111b = all borders.
     ; 1'st - up, 2'nd - right, 3'rd - down, 4'th - left.
     ; for example: 0000 - no borders, 1111 - all borders, 0101 - right & left borders.
@@ -57,23 +57,23 @@ DATASEG
                 db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
                 db "$"
 
-    bonus   db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-            db 't', 00h, 00h, 00h, 00h, 06h, 06h, 06h, 06h, 06h, 06h, 00h, 00h, 00h, 00h, 't', "n" 
-            db 't', 00h, 00h, 06h, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 06h, 00h, 00h, 't', "n" 
-            db 't', 00h, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 00h, 't', "n" 
-            db 't', 00h, 06h, 2ch, 2ch, 2ch, 06h, 06h, 06h, 06h, 2ch, 2ch, 2ch, 06h, 00h, 't', "n" 
-            db 't', 06h, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 06h, 't', "n" 
-            db 't', 06h, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 06h, 't', "n" 
-            db 't', 06h, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 06h, 't', "n" 
-            db 't', 06h, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 06h, 't', "n" 
-            db 't', 06h, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 06h, 't', "n" 
-            db 't', 06h, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 06h, 't', "n" 
-            db 't', 00h, 06h, 2ch, 2ch, 2ch, 06h, 06h, 06h, 06h, 2ch, 2ch, 2ch, 06h, 00h, 't', "n" 
-            db 't', 00h, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 00h, 't', "n" 
-            db 't', 00h, 00h, 06h, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 06h, 00h, 00h, 't', "n" 
-            db 't', 00h, 00h, 00h, 00h, 06h, 06h, 06h, 06h, 06h, 06h, 00h, 00h, 00h, 00h, 't', "n" 
-            db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-            db "$"
+    bonus       db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
+                db 't', 00h, 00h, 00h, 00h, 06h, 06h, 06h, 06h, 06h, 06h, 00h, 00h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 06h, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 06h, 00h, 00h, 't', "n" 
+                db 't', 00h, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 00h, 't', "n" 
+                db 't', 00h, 06h, 2ch, 2ch, 2ch, 06h, 06h, 06h, 06h, 2ch, 2ch, 2ch, 06h, 00h, 't', "n" 
+                db 't', 06h, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 06h, 't', "n" 
+                db 't', 06h, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 06h, 't', "n" 
+                db 't', 06h, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 06h, 't', "n" 
+                db 't', 06h, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 06h, 't', "n" 
+                db 't', 06h, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 06h, 't', "n" 
+                db 't', 06h, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 2ch, 06h, 2ch, 2ch, 2ch, 06h, 't', "n" 
+                db 't', 00h, 06h, 2ch, 2ch, 2ch, 06h, 06h, 06h, 06h, 2ch, 2ch, 2ch, 06h, 00h, 't', "n" 
+                db 't', 00h, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 00h, 't', "n" 
+                db 't', 00h, 00h, 06h, 06h, 2ch, 2ch, 2ch, 2ch, 2ch, 2ch, 06h, 06h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 00h, 00h, 06h, 06h, 06h, 06h, 06h, 06h, 00h, 00h, 00h, 00h, 't', "n" 
+                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
+                db "$"
 
     neighbours db 0
     neighbour_count db 0
@@ -85,6 +85,7 @@ DATASEG
     level db 1
     end_message db 'Your time (sec): ', '$'
     time_message db 'time(sec):', '$'
+    lvl_message db ' - level: /5', '$'
 
     XValue dw ?
     YValue dw ?
@@ -111,7 +112,7 @@ endp CheckCollision
 
 
 ; print a variable to screen: offset saved in bp, dh - row, dl - column, bl - color.
-proc PrintText
+proc MovCrsr
 	push ax
 	push bx
 	push cx
@@ -124,7 +125,7 @@ proc PrintText
 	pop bx
 	pop ax
 	ret
-endp PrintText
+endp MovCrsr
 
 
 proc RandomXValue
@@ -808,6 +809,30 @@ proc Print
         ret
 endp print
 
+proc PrintInfo
+    push bx 
+    mov dl, 8
+    mov dh, 24
+    call MovCrsr
+
+    lea dx, [time_message]  
+    mov ah,09h 
+    int 21h          
+
+    xor ax, ax
+    mov al, [total_time]
+    call Print
+
+    mov bl, [level]
+    add bl, "0"
+
+    mov [lvl_message + 9], bl
+    lea dx, [lvl_message]  
+    mov ah,09h 
+    int 21h          
+    pop bx
+    ret
+endp PrintInfo
 
 Start:
     mov ax, @data
@@ -862,18 +887,7 @@ MainLoop:
     dec [time]
     inc [total_time]
         
-    mov bp, offset time_message
-    mov dl, 11
-    mov dh, 24
-    call PrintText
-
-    lea dx, [end_message]  
-    mov ah,09h 
-    int 21h          
-
-    xor ax, ax
-    mov al, [total_time]
-    call Print
+    call PrintInfo
 
     ; print a variable to screen: offset saved in bp, dh - row, dl - column, bl - color. cx - text length.
     cmp [time], 0
