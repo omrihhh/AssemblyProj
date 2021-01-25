@@ -564,16 +564,7 @@ proc GetInput
     mov cx, [pos_x]
     mov dx, [pos_y]
     shr cx, 4
-    shr dx, 4
-    
-    push dx
-    push cx
-    mov [color], 0h
-    mov ax, [word pos_x]
-    mov dx, [word pos_y]
-    call EraseChar
-    pop cx
-    pop dx
+    shr dx, 4    
 
     call GetIndex
     mov bx, ax
@@ -623,6 +614,7 @@ proc GetInput
         je Border
         cmp [pos_y], 10
         jl Next_k
+        call EraseWData
 	    sub [word pos_y], step
             ret
 
@@ -633,8 +625,9 @@ proc GetInput
         je Border
         cmp [pos_y], 192 - step - tile ; 320(x) * 200(y) but 200 / 16 = 12.5.
         jg Next_k
+        call EraseWData
 	    add [word pos_y], step
-        ret
+            ret
 
     Left_pressed:
         mov bx, [bx]
@@ -643,6 +636,7 @@ proc GetInput
         je Border
         cmp [pos_x], 2
         jl Next_k
+        call EraseWData
 	    sub [word pos_x], step
             ret
 
@@ -653,6 +647,7 @@ proc GetInput
         je Border
         cmp [pos_x], 320 - step - tile
         jg Next_k
+        call EraseWData
 	    add [word pos_x], step
             ret
 
@@ -660,6 +655,17 @@ proc GetInput
         ret
 endp GetInput
 
+proc EraseWData
+    push dx
+    push cx
+    mov [color], 0h
+    mov ax, [word pos_x]
+    mov dx, [word pos_y]
+    call EraseChar
+    pop cx
+    pop dx
+    ret
+endp EraseWData
 
 ; get x cord in cx and y cord in dx.
 proc DrawPix
