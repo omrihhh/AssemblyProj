@@ -246,7 +246,7 @@ proc CheckCollision
     mov cx, [pos_y]
     cmp cx, [MTYValue]
     jne NotCollidingM
-    mov cx, 5
+    mov cx, 10
     MTLoop:
         sub [total_time], 1
         cmp [total_time], 0
@@ -1142,11 +1142,11 @@ proc GenerateTokens
     call DrawCharacter
 
     PT:
-    cmp [time], 31
-    je PTS
-    cmp [time], 32
-    je PTS
-    cmp [time], 18
+    mov ah, [time]
+    xor dx, dx
+    mov cx, 2
+    div cx
+    cmp dx, 0
     jne FG
     PTS:
     mov ax, [PTXValue]
@@ -1227,7 +1227,7 @@ proc ResetMaze1
   ; maze color.
     call DrawMaze
 
-    call GenerateTokens
+    ; call GenerateTokens
 
     xor bx, bx
     push bx
@@ -1267,17 +1267,17 @@ proc ResetMaze2
     mov bx, 100h
     int 10h  
 
-    mov [XValue], 321
-    mov [YValue], 201
+    mov [XValue], 2000
+    mov [YValue], 1000
  
-    mov [SXValue], 321
-    mov [SYValue], 201
+    mov [SXValue], 2000
+    mov [SYValue], 1000
  
-    mov [PTXValue], 321
-    mov [PTYValue], 201
+    mov [PTXValue], 2000
+    mov [PTYValue], 1000
  
-    mov [MTXValue],  321
-    mov [MTYValue],  201
+    mov [MTXValue],  2000
+    mov [MTYValue],  1000
 
     ; mov ax, 4F02h
     ; mov bx, 100h
@@ -1362,17 +1362,17 @@ proc ResetMaze3
     mov bx, 100h
     int 10h  
 
-    mov [XValue], 321
-    mov [YValue], 201
+    mov [XValue], 2000
+    mov [YValue], 1000
  
-    mov [SXValue], 321
-    mov [SYValue], 201
+    mov [SXValue], 2000
+    mov [SYValue], 1000
  
-    mov [PTXValue], 321
-    mov [PTYValue], 201
+    mov [PTXValue], 2000
+    mov [PTYValue], 1000
  
-    mov [MTXValue],  321
-    mov [MTYValue],  201
+    mov [MTXValue],  2000
+    mov [MTYValue],  1000
 
     ; mov ax, 4F02h
     ; mov bx, 100h
@@ -1513,6 +1513,11 @@ MainLoop:
     call ResetMaze3
 
     Run:
+        mov cx, [XValue]
+        mov dx, [YValue]
+        mov bx, offset finish
+        call DrawCharacter
+
         call GetInput
         call CheckCollision
 
