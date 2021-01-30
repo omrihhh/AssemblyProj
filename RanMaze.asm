@@ -11,11 +11,19 @@ IDEAL
 
 MODEL small
 
-STACK 100h
+STACK 200h
 
 DATASEG
 
     tile equ 16 ; 16 * 16.
+    maze equ mazeTL
+    maze_index dw 0
+    XScreen equ 640
+    YScreen equ 384
+    XBScreen db 40
+    YBScreen db 24
+    Xoffset dw 0
+    Yoffset dw 0
     spacing equ 4 
     step equ 16 ; number of pixels the palyer moves.
     color db 0fh 
@@ -23,7 +31,7 @@ DATASEG
     pos_y dw 0 ; player's y value.
     player_print db 1
             
-    maze        db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+    mazeTL      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
                 db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
                 db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
                 db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
@@ -35,7 +43,46 @@ DATASEG
                 db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
                 db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
                 db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-                db "$"
+ 
+    mazeTR      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+
+    mazeBL      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+    
+    mazeBR      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+                ;db "$"
     ; 15h = 1111b = all borders.
     ; 1'st - up, 2'nd - right, 3'rd - down, 4'th - left.
     ; for example: 0000 - no borders, 1111 - all borders, 0101 - right & left borders.
@@ -134,13 +181,13 @@ DATASEG
     neighbour_count db 0
     neighbours_indexes db 4 dup(0)
 
-    time db 25
+    time db 50
     last_time db 0
     total_time dw 0
     level db 1
     end_message db 'Your time (sec): ', '$'
     time_message db 'time(sec):', '$'
-    lvl_message db ' - level:@/5', '$'
+    lvl_message db ' - level:@/3', '$'
 
     XValue dw 321
     YValue dw 201
@@ -153,6 +200,8 @@ DATASEG
 
     MTXValue dw 321
     MTYValue dw 201
+
+    base_sp dw ?
 
     speed db, 1
 
@@ -250,13 +299,14 @@ proc RandomXValue
 
 	mov  ax, dx
 	xor  dx, dx
-    mov cx, 20
+    xor cx, cx
+    mov cl, [XBScreen]
     sub cx, bx
 	div  cx
     add  dx, bx
-    shl  dx, 4
+    shl  dx, spacing
     pop  cx
-    push bx
+    pop bx
     ret
 endp RandomXValue
 
@@ -268,11 +318,12 @@ proc RandomYValue
 
 	mov  ax, dx
 	xor  dx, dx
-    mov cx, 12
+    xor cx, cx
+    mov cl, [YBScreen]
     sub cx, bx
 	div  cx
     add  dx, bx
-    shl  dx, 4
+    shl  dx, spacing
     pop  cx
     ret
 endp RandomYValue
@@ -337,11 +388,22 @@ proc Random
         ret
 endp Random
 
+proc PrepMazeIndex
+    push ax
+    xor ax, ax
+    mov ah, [byte maze_index]
+    mov dx, 252
+    mul dx
+    mov [maze_index], ax
+    pop ax
+    ret
+endp PrepMazeIndex
 
 proc GenerateMaze
     call EraseMaze
+    ; mov [maze + 19], 1011b
     push dx
-
+    push [maze_index]
     mov bx, 12
     call Random
     mov al, 21
@@ -350,9 +412,9 @@ proc GenerateMaze
     call Random
     add ax, dx
     mov bx, ax
-
-    mov bp, sp
+    mov [base_sp], sp
     push bx
+    add bx, [maze_index]
     or [maze + bx], 10000B
 
     GeneretionLoop:
@@ -361,7 +423,7 @@ proc GenerateMaze
 	    mov ah, 86h
 	    int 15h
 
-        cmp bp, sp
+        cmp [base_sp], sp
         je EndGeneretionLoop1
         pop cx
         call GetNeighbours
@@ -399,7 +461,6 @@ proc GenerateMaze
         inc bx
         mov [neighbours_indexes + bx], cl
         inc [neighbours_indexes + bx]
-
     NIDown:
         xor ax, ax
         mov al, [neighbours]
@@ -430,8 +491,10 @@ proc GenerateMaze
         cmp dx, ax
         jne NBRight
         mov bx, cx
+        add bx, [maze_index]
         and [maze + bx], 10111B
         mov bx, dx
+        add bx, [maze_index]
         and [maze + bx], 11101B
 
     NBRight:
@@ -440,8 +503,10 @@ proc GenerateMaze
         cmp dx, ax
         jne NBDown
         mov bx, cx
+        add bx, [maze_index]
         and [maze + bx], 11011B
         mov bx, dx
+        add bx, [maze_index]
         and [maze + bx], 11110B
 
     NBDown:
@@ -450,8 +515,10 @@ proc GenerateMaze
         cmp dx, ax
         jne NBLeft
         mov bx, cx
+        add bx, [maze_index]
         and [maze + bx], 11101B
         mov bx, dx
+        add bx, [maze_index]
         and [maze + bx], 10111B
 
     NBLeft:
@@ -460,19 +527,23 @@ proc GenerateMaze
         cmp dx, ax
         jne EndBorderRemoving
         mov bx, cx
+        add bx, [maze_index]
         and [maze + bx], 11110B
         mov bx, dx
+        add bx, [maze_index]
         and [maze + bx], 11011B
 
     EndBorderRemoving:
         xor ax, ax
         mov bx, dx
+        add bx, [maze_index]
         add [maze + bx], 10000B
         mov bl, [maze + bx]
         push dx
         jmp GeneretionLoop
 
     EndGeneretionLoop:
+        pop [maze_index]
         pop dx
         ret 
 endp GenerateMaze
@@ -495,6 +566,7 @@ proc GetNeighbours
         mov bx, cx
         sub bx, 21
         add bx, offset maze
+        add bx, [maze_index]
         mov bx, [bx]
         and bx, 10000B
         cmp bx, 10000B
@@ -513,6 +585,7 @@ proc GetNeighbours
         mov bx, cx
         inc bx
         add bx, offset maze
+        add bx, [maze_index]
         mov bx, [bx]
         and bx, 10000B
         cmp bx, 10000B
@@ -526,6 +599,7 @@ proc GetNeighbours
         mov bx, cx
         add bx, 21
         add bx, offset maze
+        add bx, [maze_index]
         mov bx, [bx]
         and bx, 10000B
         cmp bx, 10000B
@@ -543,6 +617,7 @@ proc GetNeighbours
         mov bx, cx
         dec bx
         add bx, offset maze
+        add bx, [maze_index]
         mov bx, [bx]
         and bx, 10000B
         cmp bx, 10000B
@@ -563,11 +638,12 @@ endp GetNeighbours
 proc GetInput
     mov cx, [pos_x]
     mov dx, [pos_y]
-    shr cx, 4
-    shr dx, 4    
+    shr cx, spacing
+    shr dx, spacing
 
-    call GetIndex
+    call GetAllMazesIndex
     mov bx, ax
+
 
     xor ax, ax
     mov ah, 1
@@ -623,7 +699,7 @@ proc GetInput
         and bx, 0010B
         cmp bx, 0010B
         je Border
-        cmp [pos_y], 192 - step - tile ; 320(x) * 200(y) but 200 / 16 = 12.5.
+        cmp [pos_y], YScreen - step - tile ; 320(x) * 200(y) but 200 / 16 = 12.5.
         jg Next_k
         call EraseWData
 	    add [word pos_y], step
@@ -645,7 +721,7 @@ proc GetInput
         and bx, 0100B
         cmp bx, 0100B
         je Border
-        cmp [pos_x], 320 - step - tile
+        cmp [pos_x], XScreen - step - tile
         jg Next_k
         call EraseWData
 	    add [word pos_x], step
@@ -671,14 +747,18 @@ endp EraseWData
 proc DrawPix
     push ax
     mov ah, 0ch
+    add cx, [Xoffset]
+    add dx, [Yoffset]
     mov al, [color]
     int 10h 
+    sub cx, [Xoffset]
+    sub dx, [Yoffset]
     pop ax
     ret
 endp DrawPix
 
 
-; get x cord in ax and dx in y cord.
+;; get x cord in ax and dx in y cord.
 proc DrawTile
     push bp
     mov bp, sp 
@@ -810,7 +890,9 @@ endp EraseChar
 
 proc EraseMaze 
     push bx
+    push cx
     mov bx, offset maze
+    add bx, [maze_index]
     add bx, 251
 
     EraseMazeLoop:
@@ -820,9 +902,12 @@ proc EraseMaze
 
     Move:
         dec bx
-        cmp bx , offset maze - 1
+        mov cx, offset maze - 1 
+        add cx, [maze_index]
+        cmp bx, cx 
         jne EraseMazeLoop
         
+    pop cx
     pop bx
     ret
 endp EraseMaze
@@ -836,9 +921,63 @@ proc GetIndex
     mul dx
     pop dx
     add ax, cx
+    add ax, [maze_index]
     add ax, offset maze
     ret
 endp GetIndex
+
+proc GetAllMazesIndex
+    push [maze_index]
+    ; TLC:
+    cmp dx, 11
+    jg RTC
+    cmp cx, 19
+    jg RTC
+    mov [maze_index], 0
+    push dx
+    call PrepMazeIndex
+    pop dx
+    call GetIndex
+    RTC:
+    cmp dx, 11
+    jg LBC
+    cmp cx, 20
+    jl LBC
+    sub cx, 20
+    mov [maze_index], 1
+    push dx
+    call PrepMazeIndex
+    pop dx
+    call GetIndex
+    jmp RetGetAllMazesIndex
+    LBC:
+    cmp dx, 12
+    jl RBC
+    cmp cx, 19
+    jg RBC
+    sub dx, 12
+    mov [maze_index], 2
+    push dx
+    call PrepMazeIndex
+    pop dx
+    call GetIndex
+    RBC:
+    cmp dx, 12
+    jl RetGetAllMazesIndex
+    cmp cx, 20
+    jl RetGetAllMazesIndex
+    sub dx, 12
+    sub cx, 20
+    mov [maze_index], 3
+    push dx
+    call PrepMazeIndex
+    pop dx
+    call GetIndex
+    jmp RetGetAllMazesIndex
+    RetGetAllMazesIndex:
+    pop [maze_index]
+    ret
+endp GetAllMazesIndex
 
 
 proc DrawMaze
@@ -936,7 +1075,7 @@ endp print
 
 proc PrintInfo
     push bx 
-    mov dl, 8
+    mov dl, 7
     mov dh, 24
     call MovCrsr
 
@@ -956,6 +1095,7 @@ proc PrintInfo
     mov ah,09h 
     int 21h          
     pop bx
+
     ret
 endp PrintInfo
 
@@ -964,8 +1104,16 @@ proc GenerateTokens
     push bx
     xor bx, bx
     mov bx, 1
+    cmp [time], 44
+    je SBS
+    cmp [time], 33
+    je SBS
     cmp [time], 23
     jne MT
+    SBS:
+    mov ax, [SXValue]
+    mov dx, [SYValue]
+    call EraseChar
     call RandomXValue
     mov cx, dx
     mov [SXValue], cx
@@ -975,8 +1123,16 @@ proc GenerateTokens
     call DrawCharacter
 
     MT:
+    cmp [time], 41
+    je MTS
+    cmp [time], 37
+    je MTS
     cmp [time], 20
     jne PT
+    MTS:
+    mov ax, [MTXValue]
+    mov dx, [MTYValue]
+    call EraseChar
     call RandomXValue
     mov cx, dx
     mov [MTXValue], cx
@@ -986,8 +1142,16 @@ proc GenerateTokens
     call DrawCharacter
 
     PT:
+    cmp [time], 31
+    je PTS
+    cmp [time], 32
+    je PTS
     cmp [time], 18
     jne FG
+    PTS:
+    mov ax, [PTXValue]
+    mov dx, [PTYValue]
+    call EraseChar
     call RandomXValue
     mov cx, dx
     mov [PTXValue], cx
@@ -1001,14 +1165,23 @@ proc GenerateTokens
 
 endp GenerateTokens
 
-proc ResetMaze
+proc ResetMaze1
     mov [time], 25
+    mov [byte XBScreen], 20
+    mov [byte YBScreen], 12
+    ; mov ax, 0600h    ; 06 to scroll & 00 for full screen.
+    ; mov bh, 0h       ; attribute 7 for background and 1 for foreground.
+    ; mov cx, 0h       ; starting coordinates.
+    ; mov dx, 1000h    ; ending coordinates.
+    ; int 10h
 
-    mov ax, 0600h    ; 06 to scroll & 00 for full screen.
-    mov bh, 0h       ; attribute 7 for background and 1 for foreground.
-    mov cx, 0h       ; starting coordinates.
-    mov dx, 184fh    ; ending coordinates.
+    mov ax, 3h
     int 10h
+
+    mov ah, 00h ; Set video mode.
+    mov al, 13h ; Mode 13h.
+
+    int 10h  
 
     mov [XValue], 321
     mov [YValue], 201
@@ -1022,20 +1195,40 @@ proc ResetMaze
     mov [MTXValue],  321
     mov [MTYValue],  201
 
+    ; mov ax, 4F02h
+    ; mov bx, 100h
+    ; int 10h  
+
+    ; push ax
+    ; push bx
+
+    mov [pos_x], 0
+    mov [pos_y], 0
+
+    ; change keyboard refresh rate to match delay between frames.
     mov ah, 03h 
     mov al, 05h
     mov bh, 00h
     mov bl, 08h
     int 16h
 
-    mov [pos_x], 0
-    mov [pos_y], 0
-    xor ax, ax
-    call GenerateMaze
+    ; pop bx
+    ; pop ax
 
-    mov [color], 15    ; maze color.
+    mov [color], 0fh
+
+    xor ax, ax
+
+    call PrepMazeIndex
+
+    call GenerateMaze
+    ; maze equ mazeTR
+    ; call GenerateMaze
+  ; maze color.
     call DrawMaze
-    
+
+    call GenerateTokens
+
     xor bx, bx
     push bx
     mov bl, [level]
@@ -1047,12 +1240,238 @@ proc ResetMaze
     mov [YValue], dx
     mov bx, offset finish
     call DrawCharacter
+    pop bx
 
     mov [speed], 1
 
-    pop bx
     ret
-endp ResetMaze
+endp ResetMaze1
+
+proc ResetMaze2
+    mov [Xoffset], 0
+    mov [Yoffset], 0
+    mov [time], 50
+    mov [XBScreen], 40
+    mov [YBScreen], 12
+
+    ; mov ax, 0600h    ; 06 to scroll & 00 for full screen.
+    ; mov bh, 0h       ; attribute 7 for background and 1 for foreground.
+    ; mov cx, 0h       ; starting coordinates.
+    ; mov dx, 1000h    ; ending coordinates.
+    ; int 10h
+
+    mov ax, 3h
+    int 10h
+
+    mov ax, 4F02h
+    mov bx, 100h
+    int 10h  
+
+    mov [XValue], 321
+    mov [YValue], 201
+ 
+    mov [SXValue], 321
+    mov [SYValue], 201
+ 
+    mov [PTXValue], 321
+    mov [PTYValue], 201
+ 
+    mov [MTXValue],  321
+    mov [MTYValue],  201
+
+    ; mov ax, 4F02h
+    ; mov bx, 100h
+    ; int 10h  
+
+    ; push ax
+    ; push bx
+
+    mov [pos_x], 0
+    mov [pos_y], 0
+
+    ; change keyboard refresh rate to match delay between frames.
+    mov ah, 03h 
+    mov al, 05h
+    mov bh, 00h
+    mov bl, 08h
+    int 16h
+
+    ; pop bx
+    ; pop ax
+
+    mov [color], 0fh
+
+    xor ax, ax
+
+    call PrepMazeIndex
+
+    call GenerateMaze
+    and [maze + 19], 11011b
+    ; maze equ mazeTR
+    ; call GenerateMaze
+  ; maze color.
+    call DrawMaze
+
+    mov [maze_index], 1
+    call PrepMazeIndex
+    call GenerateMaze
+    mov [Xoffset], 320
+    mov bx, [maze_index]
+    and [maze + bx], 1110b
+     
+    call DrawMaze
+     
+    mov [Xoffset], 0
+    mov [maze_index], 0
+
+    xor bx, bx
+    push bx
+    mov bl, [level]
+    add bx, 8
+    call RandomXValue
+    mov cx, dx
+    mov [XValue], dx
+    call RandomYValue
+    mov [YValue], dx
+    mov bx, offset finish
+    call DrawCharacter
+    pop bx
+
+    mov [speed], 1
+
+    ret
+endp ResetMaze2
+
+proc ResetMaze3
+    mov [Xoffset], 0
+    mov [Yoffset], 0
+    mov [time], 50
+    mov [XBScreen], 40
+    mov [YBScreen], 24
+
+    ; mov ax, 0600h    ; 06 to scroll & 00 for full screen.
+    ; mov bh, 0h       ; attribute 7 for background and 1 for foreground.
+    ; mov cx, 0h       ; starting coordinates.
+    ; mov dx, 1000h    ; ending coordinates.
+    ; int 10h
+
+    mov ax, 3h
+    int 10h
+
+    mov ax, 4F02h
+    mov bx, 100h
+    int 10h  
+
+    mov [XValue], 321
+    mov [YValue], 201
+ 
+    mov [SXValue], 321
+    mov [SYValue], 201
+ 
+    mov [PTXValue], 321
+    mov [PTYValue], 201
+ 
+    mov [MTXValue],  321
+    mov [MTYValue],  201
+
+    ; mov ax, 4F02h
+    ; mov bx, 100h
+    ; int 10h  
+
+    ; push ax
+    ; push bx
+
+    mov [pos_x], 0
+    mov [pos_y], 0
+
+    ; change keyboard refresh rate to match delay between frames.
+    mov ah, 03h 
+    mov al, 05h
+    mov bh, 00h
+    mov bl, 08h
+    int 16h
+
+    ; pop bx
+    ; pop ax
+
+    mov [color], 0fh
+
+    xor ax, ax
+
+    call PrepMazeIndex
+
+    call GenerateMaze
+    and [maze + 19], 11011b
+    and [maze + 231], 11101b
+    and [maze + 250], 1001b
+    ; maze equ mazeTR
+    ; call GenerateMaze
+  ; maze color.
+    call DrawMaze
+
+    mov [maze_index], 1
+    call PrepMazeIndex
+    call GenerateMaze
+    mov [Xoffset], 320
+    mov bx, [maze_index]
+    and [maze + bx], 1110b
+    and [maze + bx + 231], 11100b
+    and [maze + bx + 250], 11101b
+     
+    call DrawMaze
+     
+    mov [Xoffset], 0
+    mov [maze_index], 0
+
+    mov [maze_index], 2
+    call PrepMazeIndex
+    call GenerateMaze
+    mov [Yoffset], 192
+    mov bx, [maze_index]
+    and [maze + bx], 10111b
+    and [maze + bx + 19], 0011b
+    and [maze + bx + 250], 11011b
+
+    call DrawMaze
+    
+    mov [Yoffset], 0
+    mov [maze_index], 0
+
+    mov [maze_index], 3
+    call PrepMazeIndex
+    call GenerateMaze
+    mov [Yoffset], 192
+    mov [Xoffset], 320
+    mov bx, [maze_index]
+    and [maze + bx], 10110b
+    and [maze + bx + 19], 0111b
+    and [maze + bx + 231], 1110b
+    call DrawMaze
+    mov [Xoffset], 0
+    mov [Yoffset], 0
+    mov [maze_index], 0
+
+    call PrepMazeIndex
+
+    call GenerateTokens
+
+    xor bx, bx
+    push bx
+    mov bl, [level]
+    add bx, 8
+    call RandomXValue
+    mov cx, dx
+    mov [XValue], dx
+    call RandomYValue
+    mov [YValue], dx
+    mov bx, offset finish
+    call DrawCharacter
+    pop bx
+
+    mov [speed], 1
+
+    ret
+endp ResetMaze3
 
 Start:
     mov ax, @data
@@ -1063,45 +1482,10 @@ Start:
                 ; Don't forget to view memory map to recollect that address.
                 ; We are now in 320x200x256.
         
-    mov ah, 00h ; Set video mode.
-    mov al, 13h ; Mode 13h.
-    int 10h  
+    ; mov ah, 00h ; Set video mode.
+    ; mov al, 13h ; Mode 13h.
 
-    push ax
-    push bx
-
-    ; change keyboard refresh rate to match delay between frames.
-    mov ah, 03h 
-    mov al, 05h
-    mov bh, 00h
-    mov bl, 08h
-    int 16h
-
-    pop bx
-    pop ax
-
-    mov [color], 0fh
-
-    xor ax, ax
-    call GenerateMaze
-
-    push [word color]
-    mov [color], 15 ; maze color.
-    call DrawMaze
-    pop [word color]
-
-    xor bx, bx
-    push bx
-    mov bl, [level]
-    add bx, 3
-    call RandomXValue
-    mov cx, dx
-    mov [XValue], dx
-    call RandomYValue
-    mov [YValue], dx
-    mov bx, offset finish
-    call DrawCharacter
-    pop bx
+    call ResetMaze1
 
 MainLoop:
     mov ah,2ch
@@ -1119,9 +1503,14 @@ MainLoop:
     jne Run
 
     inc [level]
-    cmp [level], 6
+    cmp [level], 4
     je Exit
-    call ResetMaze
+    cmp [level], 2
+    jne PrintMaze3
+    call ResetMaze2
+    jmp Run
+    PrintMaze3:
+    call ResetMaze3
 
     Run:
         call GetInput
@@ -1134,7 +1523,7 @@ MainLoop:
 
         xor cx, cx
         mov cl, [speed]
-        mov dx, 1000
+        mov dx, 200
 	    mov ah, 86h
 	    int 15h
 
