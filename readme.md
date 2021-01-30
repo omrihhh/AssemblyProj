@@ -22,4 +22,5 @@
 - [ ] Welcome & Menu page - Aylon
 - [ ] Tokens design - Aylon
 - [ ] Adjusting the Tokens' Abilities - Aylon
+- [ ] Updating the pictures at the project's page - Aylon
 - [ ] Last checkup of the code + cleanup - Aylon
