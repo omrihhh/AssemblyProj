@@ -21,6 +21,6 @@
 - [x] ~~Token Generation - Omri~~
 - [ ] Welcome & Menu page - Aylon
 - [ ] Tokens design - Aylon
-- [ ] Adjusting the Tokens' Abilities - Aylon
+- [ ] Adjusting the tokens' abilities - Aylon
 - [ ] Updating the pictures at the project's page - Aylon
 - [ ] Last checkup of the code + cleanup - Aylon
