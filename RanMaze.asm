@@ -124,20 +124,20 @@ DATASEG
                 db "$"
 
     peedB       db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 06h, 06h, 06h, 06h, 06h, 06h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 06h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 06h, 00h, 00h, 't', "n" 
-                db 't', 00h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 00h, 't', "n" 
-                db 't', 00h, 06h, 01h, 01h, 01h, 06h, 06h, 06h, 06h, 01h, 01h, 01h, 06h, 00h, 't', "n" 
-                db 't', 06h, 01h, 01h, 01h, 06h, 01h, 01h, 01h, 01h, 06h, 01h, 01h, 01h, 06h, 't', "n" 
-                db 't', 06h, 01h, 01h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 01h, 01h, 06h, 't', "n" 
-                db 't', 06h, 01h, 01h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 01h, 01h, 06h, 't', "n" 
-                db 't', 06h, 01h, 01h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 01h, 01h, 06h, 't', "n" 
-                db 't', 06h, 01h, 01h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 01h, 01h, 06h, 't', "n" 
-                db 't', 06h, 01h, 01h, 01h, 06h, 01h, 01h, 01h, 01h, 06h, 01h, 01h, 01h, 06h, 't', "n" 
-                db 't', 00h, 06h, 01h, 01h, 01h, 06h, 06h, 06h, 06h, 01h, 01h, 01h, 06h, 00h, 't', "n" 
-                db 't', 00h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 00h, 't', "n" 
-                db 't', 00h, 00h, 06h, 06h, 01h, 01h, 01h, 01h, 01h, 01h, 06h, 06h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 06h, 06h, 06h, 06h, 06h, 06h, 00h, 00h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 't', "n" 
+                db 't', 00h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 't', "n" 
+                db 't', 00h, 36h, 00h, 00h, 00h, 36h, 36h, 00h, 36h, 36h, 00h, 00h, 00h, 36h, 't', "n" 
+                db 't', 00h, 36h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 36h, 't', "n" 
+                db 't', 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 't', "n" 
+                db 't', 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 't', "n" 
+                db 't', 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 't', "n" 
+                db 't', 00h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 't', "n" 
+                db 't', 00h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 't', "n" 
                 db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
                 db "$"
     
@@ -189,17 +189,17 @@ DATASEG
     time_message db 'time(sec):', '$'
     lvl_message db ' - level:@/3', '$'
 
-    XValue dw 321
-    YValue dw 201
+    XValue dw 656
+    YValue dw 400
 
-    SXValue dw 321
-    SYValue dw 201
+    SXValue dw 656
+    SYValue dw 400
 
-    PTXValue dw 321
-    PTYValue dw 201
+    PTXValue dw 656
+    PTYValue dw 400
 
-    MTXValue dw 321
-    MTYValue dw 201
+    MTXValue dw 656
+    MTYValue dw 400
 
     base_sp dw ?
 
@@ -235,8 +235,8 @@ proc CheckCollision
     mov bh, 00h
     mov bl, 06h
     int 16h
-    mov [SXValue], 321
-    mov [SYValue], 201
+    mov [SXValue], 656
+    mov [SYValue], 400
 
     NotCollidingS:
     mov cx, [pos_x]
@@ -253,8 +253,8 @@ proc CheckCollision
         je FMT
         loop MTLoop
     FMT:
-        mov [MTXValue],  321
-        mov [MTYValue],  201
+        mov [MTXValue],  656
+        mov [MTYValue],  400
 
     NotCollidingM:
     mov cx, [pos_x]
@@ -265,8 +265,8 @@ proc CheckCollision
     cmp cx, [PTYValue]
     jne NotColliding
     add [total_time], 5
-    mov [PTXValue], 321
-    mov [PTYValue], 201
+    mov [PTXValue], 656
+    mov [PTYValue], 400
 
     NotColliding:
         pop cx
@@ -852,6 +852,7 @@ proc EraseChar
     push ax 
     push cx
     push bx
+    mov [color], 0h
 
     Erase:
         add dx, tile ; y.
@@ -1113,7 +1114,10 @@ proc GenerateTokens
     SBS:
     mov ax, [SXValue]
     mov dx, [SYValue]
+    cmp ax, 656
+    je DontES
     call EraseChar
+    DontES:
     call RandomXValue
     mov cx, dx
     mov [SXValue], cx
@@ -1132,7 +1136,10 @@ proc GenerateTokens
     MTS:
     mov ax, [MTXValue]
     mov dx, [MTYValue]
+    cmp ax, 656
+    je DontEMT
     call EraseChar
+    DontEMT:
     call RandomXValue
     mov cx, dx
     mov [MTXValue], cx
@@ -1142,16 +1149,20 @@ proc GenerateTokens
     call DrawCharacter
 
     PT:
+    xor ax, ax
     mov ah, [time]
     xor dx, dx
-    mov cx, 2
+    mov cx, 3
     div cx
     cmp dx, 0
     jne FG
     PTS:
     mov ax, [PTXValue]
     mov dx, [PTYValue]
+    cmp ax, 656
+    je DontEPT
     call EraseChar
+    DontEPT:
     call RandomXValue
     mov cx, dx
     mov [PTXValue], cx
@@ -1183,17 +1194,17 @@ proc ResetMaze1
 
     int 10h  
 
-    mov [XValue], 321
-    mov [YValue], 201
+    mov [XValue], 656
+    mov [YValue], 400
  
-    mov [SXValue], 321
-    mov [SYValue], 201
+    mov [SXValue], 656
+    mov [SYValue], 400
  
-    mov [PTXValue], 321
-    mov [PTYValue], 201
+    mov [PTXValue], 656
+    mov [PTYValue], 400
  
-    mov [MTXValue],  321
-    mov [MTYValue],  201
+    mov [MTXValue],  656
+    mov [MTYValue],  400
 
     ; mov ax, 4F02h
     ; mov bx, 100h
@@ -1267,17 +1278,17 @@ proc ResetMaze2
     mov bx, 100h
     int 10h  
 
-    mov [XValue], 2000
-    mov [YValue], 1000
+    mov [XValue], 656
+    mov [YValue], 400
  
-    mov [SXValue], 2000
-    mov [SYValue], 1000
+    mov [SXValue], 656
+    mov [SYValue], 400
  
-    mov [PTXValue], 2000
-    mov [PTYValue], 1000
+    mov [PTXValue], 656
+    mov [PTYValue], 400
  
-    mov [MTXValue],  2000
-    mov [MTYValue],  1000
+    mov [MTXValue],  656
+    mov [MTYValue],  400
 
     ; mov ax, 4F02h
     ; mov bx, 100h
@@ -1362,17 +1373,17 @@ proc ResetMaze3
     mov bx, 100h
     int 10h  
 
-    mov [XValue], 2000
-    mov [YValue], 1000
+    mov [XValue], 656
+    mov [YValue], 400
  
-    mov [SXValue], 2000
-    mov [SYValue], 1000
+    mov [SXValue], 656
+    mov [SYValue], 400
  
-    mov [PTXValue], 2000
-    mov [PTYValue], 1000
+    mov [PTXValue], 656
+    mov [PTYValue], 400
  
-    mov [MTXValue],  2000
-    mov [MTYValue],  1000
+    mov [MTXValue],  656
+    mov [MTYValue],  400
 
     ; mov ax, 4F02h
     ; mov bx, 100h
