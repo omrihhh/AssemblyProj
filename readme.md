@@ -2,9 +2,9 @@
 **Random** maze solving game generated with **recursive backtracking** implemented in **Assembly** for our **final project** in Assembly course.
 
 ## Photos
-![](assets/maze.jpg)
-![](assets/maze2.jpg)
-![](assets/maze3.jpg)
+![](assets/maze1.png)
+![](assets/maze2.png)
+![](assets/maze3.png)
 
 ## Tasks
 - [x] ~~Character rendering~~ 
@@ -21,6 +21,6 @@
 - [x] ~~Token Generation - Omri~~
 - [x] ~~Tokens design - Aylon~~
 - [x] ~~Adjusting the tokens' abilities - Aylon~~
+- [x] ~~Updating the pictures at the project's page - Aylon~~
 - [ ] Welcome & Menu page - Aylon
-- [ ] Updating the pictures at the project's page - Aylon
 - [ ] Last checkup of the code + cleanup - Aylon
