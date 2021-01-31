@@ -7,21 +7,20 @@
 ![](assets/maze3.png)
 
 ## Tasks
-- [x] ~~Character rendering~~ 
-- [x] ~~Maze generation algorithm~~
-- [x] ~~Functioning borders~~
-- [x] ~~Character rendering~~
+- [x] ~~Character rendering - Omri~~ 
+- [x] ~~Maze generation algorithm - Omri~~
+- [x] ~~Functioning borders - Omri~~
+- [x] ~~Character rendering - Omri~~
 - [x] ~~Rewriting the rendering system - Omri~~
 - [x] ~~Some sort of level system - Omri~~
 - [x] ~~Score system - Aylon~~
 - [x] ~~Timer - Both~~
-- [x] ~~Code cleanup - Aylon~~
 - [x] ~~Better player character - Aylon~~
-- [x] ~~Better bonus icon - Aylon~~
 - [x] ~~Token Generation - Omri~~
 - [x] ~~Tokens design - Aylon~~
 - [x] ~~Adjusting the tokens' abilities - Aylon~~
-- [x] ~~Updating the pictures at the project's page - Aylon~~
 - [ ] Welcome & Menu page - Aylon
 - [ ] Score board at the end of the game - Omri
 - [ ] Adding a second player to the game - Aylon
+- [ ] Updating the picture in the project's page - Aylon
+- [ ] Code overview and cleanup - Aylon
