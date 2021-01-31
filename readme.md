@@ -23,4 +23,5 @@
 - [x] ~~Adjusting the tokens' abilities - Aylon~~
 - [x] ~~Updating the pictures at the project's page - Aylon~~
 - [ ] Welcome & Menu page - Aylon
-- [ ] Last checkup of the code + cleanup - Aylon
+- [ ] Score board at the end of the game - Omri
+- [ ] Adding a second player to the game - Aylon
