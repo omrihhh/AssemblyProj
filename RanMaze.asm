@@ -205,7 +205,8 @@ DATASEG
 
     base_sp dw ?
 
-    speed db, 1
+    speed db 1
+    info_space db 7
 
 
 CODESEG
@@ -1078,7 +1079,7 @@ endp print
 
 proc PrintInfo
     push bx 
-    mov dl, 7
+    mov dl, [info_space]
     mov dh, 24
     call MovCrsr
 
@@ -1515,6 +1516,7 @@ MainLoop:
     cmp [time], 0
     jne Run
 
+    mov [info_space], 27
     inc [level]
     cmp [level], 4
     je Exit
