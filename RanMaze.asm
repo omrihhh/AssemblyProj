@@ -5,7 +5,9 @@
 ; Author: Omri Hulaty and Aylon Moyal.
 ;------------------------------------------
 
-; algorithm details from https://en.wikipedia.org/wiki/Maze_generation_algorithm under randomized depth-first search / Iterative implementation
+; algorithm details from https://en.wikipedia.org/wiki/Maze_generation_algorithm under randomized depth-first search / Iterative implementation.
+; colors from https://www.fountainware.com/EXPL/vga_color_palettes.htm
+; screen size infomation from http://www.wagemakers.be/english/doc/vga 
 
 IDEAL
 

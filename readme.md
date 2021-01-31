@@ -19,8 +19,8 @@
 - [x] ~~Better player character - Aylon~~
 - [x] ~~Better bonus icon - Aylon~~
 - [x] ~~Token Generation - Omri~~
+- [x] ~~Tokens design - Aylon~~
+- [x] ~~Adjusting the tokens' abilities - Aylon~~
 - [ ] Welcome & Menu page - Aylon
-- [ ] Tokens design - Aylon
-- [ ] Adjusting the tokens' abilities - Aylon
 - [ ] Updating the pictures at the project's page - Aylon
 - [ ] Last checkup of the code + cleanup - Aylon
