@@ -19,8 +19,8 @@
 - [x] ~~Token Generation - Omri~~
 - [x] ~~Tokens design - Aylon~~
 - [x] ~~Adjusting the tokens' abilities - Aylon~~
-- [ ] Welcome & Menu page - Aylon
-- [ ] Score board at the end of the game - Omri
+- [x] ~~Welcome & Menu page - Aylon~~
+- [ ] Score board at the end of the game - Aylon
 - [ ] Adding a second player to the game - Aylon
 - [ ] Updating the picture in the project's page - Aylon
 - [ ] Code overview and cleanup - Aylon
