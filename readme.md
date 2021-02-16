@@ -20,7 +20,7 @@
 - [x] ~~Tokens design - Aylon~~
 - [x] ~~Adjusting the tokens' abilities - Aylon~~
 - [x] ~~Welcome & Menu page - Aylon~~
-- [ ] Score board at the end of the game - Aylon
+- [x] ~~Score board at the end of the game - Aylon~~
 - [ ] Adding a second player to the game - Aylon
 - [ ] Updating the picture in the project's page - Aylon
 - [ ] Code overview and cleanup - Aylon
