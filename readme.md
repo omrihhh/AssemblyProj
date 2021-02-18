@@ -21,6 +21,7 @@
 - [x] ~~Adjusting the tokens' abilities - Aylon~~
 - [x] ~~Welcome & Menu page - Aylon~~
 - [x] ~~Score board at the end of the game - Aylon~~
-- [ ] Adding a second player to the game - Aylon
+- [x] ~~Adding a second player to the game - Aylon~~
+- [ ] Parallel movement of the two players - Aylon
 - [ ] Updating the picture in the project's page - Aylon
 - [ ] Code overview and cleanup - Aylon
