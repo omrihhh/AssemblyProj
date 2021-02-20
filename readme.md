@@ -22,6 +22,6 @@
 - [x] ~~Welcome & Menu page - Aylon~~
 - [x] ~~Score board at the end of the game - Aylon~~
 - [x] ~~Adding a second player to the game - Aylon~~
-- [ ] Parallel movement of the two players - Aylon
-- [ ] Updating the picture in the project's page - Aylon
-- [ ] Code overview and cleanup - Aylon
+- [x] ~~Parallel movement of the two players - Aylon~~
+- [x] ~~Updating the picture in the project's page - Aylon~~
+- [x] ~~Code overview and cleanup - Aylon~~
