@@ -2,9 +2,10 @@
 **Random** maze solving game generated with **recursive backtracking** implemented in **Assembly** for our **final project** in Assembly course.
 
 ## Photos
-![](assets/maze1.png)
-![](assets/maze2.png)
-![](assets/maze3.png)
+![](assets/1.png)
+![](assets/2.png)
+![](assets/3.png)
+![](assets/4.png)
 
 ## Tasks
 - [x] ~~Character rendering - Omri~~ 

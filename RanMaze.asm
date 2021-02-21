@@ -1,13 +1,13 @@
 ;------------------------------------------
-; Purpose: Recursive Backtracking Assembly Game.
-; Description: Random maze solving game generated with recursive backtracking implemented in Assembly.
-; System: Turbo Assembler Ideal Mode.
-; Author: Omri Hulaty and Aylon Moyal.
+; PURPOSE: Recursive Backtracking Assembly Game.
+; DESCRIPTION: Random maze solving game generated with recursive backtracking implemented in Assembly.
+; SYSTEM: Turbo Assembler Ideal Mode.
+; AUTHOR: Omri Hulaty and Aylon Moyal.
 ;------------------------------------------
-
 ; algorithm details from https://en.wikipedia.org/wiki/Maze_generation_algorithm under randomized depth-first search / Iterative implementation.
-; colors from https://www.fountainware.com/EXPL/vga_color_palettes.htm
-; screen size infomation from http://www.wagemakers.be/english/doc/vga 
+; colors from https://www.fountainware.com/EXPL/vga_color_palettes.htm.
+; screen size infomation from http://www.wagemakers.be/english/doc/vga.
+;------------------------------------------
 
 IDEAL
 
@@ -17,167 +17,226 @@ STACK 200h
 
 DATASEG
 
-    tile equ 16 ; 16 * 16.
+    tile equ 16
     maze equ mazeTL
+    x_screen equ 640
+    y_screen equ 384
+    spacing equ 4
+    step equ 16
+
     maze_index dw 0
-    XScreen equ 640
-    YScreen equ 384
-    XBScreen db 40
-    YBScreen db 24
-    Xoffset dw 0
-    Yoffset dw 0
-    spacing equ 4 
-    step equ 16 ; number of pixels the palyer moves.
-    color db 0fh 
-    pos_x dw 0 ; player's x value.
-    pos_y dw 0 ; player's y value.
+    screen_blocks_x db 40
+    screen_blocks_y db 24
+    offset_x dw 0
+    offset_y dw 0
+    color db 0fh
+
+    pos_x_one dw 0
+    pos_y_one dw 0
+    pos_x_two dw 0
+    pos_y_two dw 0
     player_print db 1
             
-    mazeTL      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, "n" 
+    mazeTL      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
  
-    mazeTR      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+    mazeTR      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
 
-    mazeBL      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
+    mazeBL      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
     
-    mazeBR      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,  "n" 
-                ;db "$"
+    mazeBR      db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+                db 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 'n'
+
     ; 15h = 1111b = all borders.
     ; 1'st - up, 2'nd - right, 3'rd - down, 4'th - left.
     ; for example: 0000 - no borders, 1111 - all borders, 0101 - right & left borders.
-
-    character   db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-                db 't', 00h , 00h , 00h , 00h , 00h , 00h , 0Fh , 0Fh , 0Fh , 00h , 00h , 00h , 00h , 00h , 't', "n" 
-                db 't', 00h , 00h , 00h , 00h , 00h , 0Fh , 00h , 00h , 00h , 0Fh , 00h , 00h , 00h , 00h , 't', "n" 
-                db 't', 00h , 00h , 00h , 00h , 00h , 0Fh , 00h , 00h , 00h , 0Fh , 00h , 00h , 00h , 00h , 't', "n" 
-                db 't', 00h , 00h , 00h , 00h , 00h , 00h , 0Fh , 0Fh , 0Fh , 00h , 00h , 00h , 00h , 00h , 't', "n" 
-                db 't', 00h , 00h , 00h , 0Fh , 00h , 00h , 00h , 0Fh , 00h , 00h , 00h , 0Fh , 00h , 00h , 't', "n" 
-                db 't', 00h , 00h , 00h , 00h , 0Fh , 00h , 00h , 0Fh , 00h , 00h , 0Fh , 00h , 00h , 00h , 't', "n" 
-                db 't', 00h , 00h , 00h , 00h , 00h , 0Fh , 0Fh , 0Fh , 0Fh , 0Fh , 00h , 00h , 00h , 00h , 't', "n" 
-                db 't', 00h , 00h , 00h , 00h , 00h , 00h , 00h , 0Fh , 00h , 00h , 00h , 00h , 00h , 00h , 't', "n" 
-                db 't', 00h , 00h , 00h , 00h , 00h , 00h , 00h , 0Fh , 00h , 00h , 00h , 00h , 00h , 00h , 't', "n" 
-                db 't', 00h , 00h , 00h , 00h , 00h , 00h , 00h , 0Fh , 00h , 00h , 00h , 00h , 00h , 00h , 't', "n" 
-                db 't', 00h , 00h , 00h , 00h , 00h , 00h , 0Fh , 00h , 0Fh , 00h , 00h , 00h , 00h , 00h , 't', "n" 
-                db 't', 00h , 00h , 00h , 00h , 00h , 0Fh , 00h , 00h , 00h , 0Fh , 00h , 00h , 00h , 00h , 't', "n" 
-                db 't', 00h , 00h , 00h , 00h , 0Fh , 00h , 00h , 00h , 00h , 00h , 0Fh , 00h , 00h , 00h , 't', "n" 
-                db 't', 00h , 00h , 00h , 00h , 00h , 00h , 00h , 00h , 00h , 00h , 00h , 00h , 00h , 00h , 't', "n" 
-                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-                db "$"
-
-    finish      db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 2Ch, 2Ch, 2Ch, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 2Ch, 00h, 00h, 00h, 2Ch, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 2Ch, 00h, 00h, 00h, 2Ch, 2Ch, 2Ch, 2Ch, 2Ch, 2Ch, 2Ch, 2Ch, 00h, 't', "n" 
-                db 't', 00h, 2Ch, 00h, 00h, 00h, 2Ch, 00h, 00h, 2Ch, 00h, 00h, 2Ch, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 2Ch, 2Ch, 2Ch, 00h, 00h, 00h, 2Ch, 00h, 00h, 2Ch, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 2Ch, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-                db "$"
-
-    speedB      db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 't', "n" 
-                db 't', 00h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 't', "n" 
-                db 't', 00h, 36h, 00h, 00h, 00h, 36h, 36h, 00h, 36h, 36h, 00h, 00h, 00h, 36h, 't', "n" 
-                db 't', 00h, 36h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 36h, 't', "n" 
-                db 't', 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 't', "n" 
-                db 't', 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 't', "n" 
-                db 't', 00h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 't', "n" 
-                db 't', 00h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 't', "n" 
-                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-                db "$"
     
-    Minustime   db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 30h, 00h, 30h, 30h, 30h, 30h, 30h, 30h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 30h, 00h, 30h, 00h, 00h, 00h, 00h, 30h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 30h, 00h, 30h, 00h, 00h, 00h, 00h, 30h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 30h, 00h, 30h, 00h, 00h, 00h, 00h, 30h, 00h, 't', "n" 
-                db 't', 00h, 30h, 30h, 30h, 00h, 30h, 00h, 30h, 00h, 00h, 00h, 00h, 30h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 30h, 00h, 30h, 00h, 00h, 00h, 00h, 30h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 30h, 00h, 30h, 00h, 00h, 00h, 00h, 30h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 30h, 00h, 30h, 00h, 00h, 00h, 00h, 30h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 30h, 00h, 30h, 00h, 00h, 00h, 00h, 30h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 30h, 00h, 30h, 30h, 30h, 30h, 30h, 30h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-                db "$"
+    playerOne   db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h ,00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h ,00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 34h ,00h, 00h, 00h, 00h, 34h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 34h ,00h, 00h, 00h, 00h, 34h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 34h, 34h ,34h, 34h, 34h, 34h, 34h, 34h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 34h, 34h ,34h, 34h, 34h, 34h, 34h, 34h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 34h, 34h, 00h ,00h, 34h, 34h, 00h, 00h, 34h, 34h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 34h, 34h, 00h ,00h, 34h, 34h, 00h, 00h, 34h, 34h, 00h, 00h, 't', 'n'
+                db 't', 00h, 34h, 34h, 34h, 34h ,34h, 34h, 34h, 34h, 34h, 34h, 34h, 34h, 00h, 't', 'n'
+                db 't', 00h, 34h, 00h, 34h, 34h ,34h, 34h, 34h, 34h, 34h, 34h, 00h, 34h, 00h, 't', 'n'
+                db 't', 00h, 34h, 00h, 00h, 34h ,00h, 00h, 00h, 00h, 34h, 00h, 00h, 34h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 34h ,00h, 00h, 00h, 00h, 34h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 34h, 34h ,00h, 00h, 00h, 00h, 34h, 34h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h ,00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db '$'
+
+    playerTwo   db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 0Dh, 00h, 00h, 00h, 00h, 0Dh, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 0Dh, 00h, 00h, 00h, 00h, 0Dh, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 0Dh, 0Dh, 00h, 00h, 0Dh, 0Dh, 00h, 00h, 0Dh, 0Dh, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 0Dh, 0Dh, 00h, 00h, 0Dh, 0Dh, 00h, 00h, 0Dh, 0Dh, 00h, 00h, 't', 'n'
+                db 't', 00h, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 00h, 't', 'n'
+                db 't', 00h, 0Dh, 00h, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 00h, 0Dh, 00h, 't', 'n'
+                db 't', 00h, 0Dh, 00h, 00h, 0Dh, 00h, 00h, 00h, 00h, 0Dh, 00h, 00h, 0Dh, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 0Dh, 00h, 00h, 00h, 00h, 0Dh, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 0Dh, 0Dh, 00h, 00h, 00h, 00h, 0Dh, 0Dh, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db '$'
+    
+    PlayersColl db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 0Dh, 00h, 00h, 00h, 00h, 0Dh, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 0Dh, 00h, 00h, 00h, 00h, 0Dh, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 34h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 34h, 34h, 34h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 0Dh, 0Dh, 00h, 00h, 0Dh, 34h, 00h, 00h, 34h, 34h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 0Dh, 0Dh, 00h, 00h, 0Dh, 34h, 00h, 00h, 34h, 34h, 00h, 00h, 't', 'n'
+                db 't', 00h, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 0Dh, 34h, 34h, 34h, 34h, 34h, 34h, 00h, 't', 'n'
+                db 't', 00h, 0Dh, 00h, 0Dh, 0Dh, 34h, 34h, 34h, 34h, 34h, 34h, 00h, 34h, 00h, 't', 'n'
+                db 't', 00h, 0Dh, 00h, 00h, 34h, 00h, 00h, 00h, 00h, 34h, 00h, 00h, 34h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 34h, 00h, 00h, 00h, 00h, 34h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 34h, 34h, 00h, 00h, 00h, 00h, 34h, 34h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db '$'
+
+
+    finishKey   db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 2Ch, 2Ch, 2Ch, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 2Ch, 00h, 00h, 00h, 2Ch, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 2Ch, 00h, 00h, 00h, 2Ch, 2Ch, 2Ch, 2Ch, 2Ch, 2Ch, 2Ch, 2Ch, 00h, 't', 'n'
+                db 't', 00h, 2Ch, 00h, 00h, 00h, 2Ch, 00h, 00h, 2Ch, 00h, 00h, 2Ch, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 2Ch, 2Ch, 2Ch, 00h, 00h, 00h, 2Ch, 00h, 00h, 2Ch, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 2Ch, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db '$'
+
+    speedBoost  db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 't', 'n'
+                db 't', 00h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 't', 'n'
+                db 't', 00h, 36h, 00h, 00h, 00h, 36h, 36h, 00h, 36h, 36h, 00h, 00h, 00h, 36h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 't', 'n'
+                db 't', 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 't', 'n'
+                db 't', 00h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db '$'
+
+    speedBoost2 db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 't', 'n'
+                db 't', 00h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 't', 'n'
+                db 't', 00h, 36h, 00h, 00h, 00h, 36h, 36h, 00h, 36h, 36h, 00h, 00h, 00h, 36h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 00h, 't', 'n'
+                db 't', 00h, 36h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 36h, 't', 'n'
+                db 't', 00h, 36h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 36h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db '$'
+    
+    plusTime    db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 28h, 00h, 28h, 28h, 28h, 28h, 28h, 28h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 28h, 00h, 28h, 00h, 00h, 00h, 00h, 28h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 28h, 00h, 28h, 00h, 00h, 00h, 00h, 28h, 00h, 't', 'n'
+                db 't', 00h, 00h, 28h, 00h, 00h, 28h, 00h, 28h, 00h, 00h, 00h, 00h, 28h, 00h, 't', 'n'
+                db 't', 00h, 28h, 28h, 28h, 00h, 28h, 00h, 28h, 00h, 00h, 00h, 00h, 28h, 00h, 't', 'n'
+                db 't', 00h, 00h, 28h, 00h, 00h, 28h, 00h, 28h, 00h, 00h, 00h, 00h, 28h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 28h, 00h, 28h, 00h, 00h, 00h, 00h, 28h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 28h, 00h, 28h, 00h, 00h, 00h, 00h, 28h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 28h, 00h, 28h, 00h, 00h, 00h, 00h, 28h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 28h, 00h, 28h, 28h, 28h, 28h, 28h, 28h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db '$'
         
-    Plustime    db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 28h, 28h, 28h, 28h, 28h, 28h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 28h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 28h, 00h, 00h, 00h, 28h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 28h, 00h, 00h, 00h, 28h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 28h, 28h, 28h, 28h, 28h, 00h, 28h, 28h, 28h, 28h, 28h, 28h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 28h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 28h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 28h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 28h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 28h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 28h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 28h, 28h, 28h, 28h, 28h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', "n" 
-                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', "n" 
-                db "$"
+    minusTime   db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 30h, 30h, 30h, 30h, 30h, 30h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 30h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 30h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 30h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 30h, 30h, 30h, 30h, 00h, 00h, 30h, 30h, 30h, 30h, 30h, 30h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 30h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 30h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 30h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 30h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 30h, 30h, 30h, 30h, 30h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 00h, 't', 'n'
+                db 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'n'
+                db '$'
 
     neighbours db 0
     neighbour_count db 0
@@ -185,99 +244,344 @@ DATASEG
 
     time db 50
     last_time db 0
-    total_time dw 0
+    total_first_time dw 0
+    total_second_time dw 0
     level db 1
-    end_message db 'Your time (sec): ', '$'
-    time_message db 'time(sec):', '$'
-    lvl_message db ' - level:@/3', '$'
+    direction_one db 0
+    direction_two db 0
 
-    XValue dw 656
-    YValue dw 400
+    end_message_one db 'Player 1 score: ', '$'
+    end_message_two db 13, 10, 'Player 2 score: ', '$'
+    first_time_message db 'player 1: ', '$'
+    second_time_message db ' // player 2: ', '$'
+    spaces_message db ' ', '$'
+    draw_message db 13, 10, 10, 'There is a draw! Both players finished with the same score!', '$'
+    player_one_win_message db 13, 10, 10, 'Player 1 won the game!', '$'
+    player_two_win_message db 13, 10, 10, 'Player 2 won the game!', '$'
 
-    SXValue dw 656
-    SYValue dw 400
-
-    PTXValue dw 656
-    PTYValue dw 400
-
-    MTXValue dw 656
-    MTYValue dw 400
+    finish_x_value dw 656
+    finish_y_value dw 400
+    
+    speed_x_value dw 656
+    speed_y_value dw 400
+    speed_two_x_value dw 656
+    speed_two_y_value dw 400
+    plus_time_x_value dw 656
+    plus_time_y_value dw 400
+    minus_time_x_value dw 656
+    minus_time_y_value dw 400
 
     base_sp dw ?
-
-    speed db 1
+    speed dw 25000
     info_space db 7
+
+    opening_message db 10, ' WELCOME TO OUR A-MAZE-ING GAME!', 13, 10, 10
+                    db ' Your goal is to finish all levels as fast as possible', 13,10
+                    db ' The rules for this game are the following:', 13, 10, 10
+                    db ' 1. Use the arrow keys to mov(e) player no.1 and the a,s,d,w keys to mov(e)', 13, 10
+                    db '    palyer no.2', 13, 10, 10
+                    db ' 2. Throughout the game you will find 4 special tokens: +10 seconds, -5         '
+                    db '    seconds and 2 speed boosts. Notice that the speed boosts apply to both      '
+                    db '    players, so think well before you take it!', 13, 10, 10
+                    db ' 3. To finish a level, you need to reach the finish-key in the maze. The        '
+                    db '    first player to reach the key gets 2 seconds off his time!', 13, 10, 10
+                    db ' 4. There is a time limit for each level, so you need to get the key in time    '
+                    db '    or you will recieve the maximum time for the level', 13, 10, 10
+                    db ' 5. The fastest player is the winner, and can even set a new record for the     '
+                    db '    next games!', 13, 10, 10, 10
+                    db ' PRESS ANY KEY TO START!', '$'
+
+    file_name db 'testfile.txt', 0
+    file_handle dw 0
+    best_score_message db 0
+    error_message db 'Error', 10, 13, '$'
+    best_score_from_file db 0, 0, '$'
+    best_score_title db 13, 10, 'Best score of all time: ', '$'
 
 
 CODESEG
 
+proc OpenFile
+	mov ah, 3Dh
+	mov al, 2
+	lea dx, [file_name]
+	int 21h
+	jc Open_Error
+	mov [file_handle], ax
+	ret
+
+	Open_Error:
+		lea dx, [error_message]
+		mov ah, 9h
+		int 21h
+		ret
+endp OpenFile
+
+
+proc WriteToFile
+	mov ah, 40h
+	mov bx, [file_handle]
+	mov cx, 2
+
+	lea dx, [best_score_message]
+	int 21h
+	ret
+endp WriteToFile
+
+
+proc ReadFile
+	mov ah, 3Fh
+	mov bx, [file_handle]
+	mov cx, 2
+
+	lea dx, [best_score_from_file]
+	int 21h
+	ret
+endp ReadFile
+
+
+proc CloseFile
+	mov ah, 3Eh
+	mov bx, [file_handle]
+	int 21h
+	ret
+endp CloseFile
+
+
+proc UpdateBestScore
+    cmp [word best_score_from_file], ax
+    jb No_Change
+
+    mov [word best_score_message], ax
+    call OpenFile
+    call WriteToFile
+    call CloseFile
+    ret
+
+    No_Change:
+        ret
+endp UpdateBestScore
+
 
 proc CheckCollision
     push cx
+    push dx
 
-    mov cx, [pos_x]
-    cmp cx, [XValue]
-    jne NotCollidingF
+    mov cx, [pos_x_one]
+    cmp cx, [pos_x_two]
+    jne Players_Not_Colliding
 
-    mov cx, [pos_y]
-    cmp cx, [YValue]
-    jne NotCollidingF
-    mov [time], 1
+    mov dx, [pos_y_one]
+    cmp dx, [pos_y_two]
+    jne Players_Not_Colliding
 
-    NotCollidingF:
-    mov cx, [pos_x]
-    cmp cx, [SXValue]
-    jne NotCollidingS
+    lea bx, [PlayersColl]
+    call DrawCharacter
 
-    mov cx, [pos_y]
-    cmp cx, [SYValue]
-    jne NotCollidingS
-    mov [speed], 0
-    mov ah, 03h 
-    mov al, 05h
-    mov bh, 00h
-    mov bl, 06h
-    int 16h
-    mov [SXValue], 656
-    mov [SYValue], 400
 
-    NotCollidingS:
-    mov cx, [pos_x]
-    cmp cx, [MTXValue]
-    jne NotCollidingM
+    Players_Not_Colliding:
+        mov cx, [pos_x_one]
+        cmp cx, [finish_x_value]
+        jne Player_One_Not_Coll_Fin
 
-    mov cx, [pos_y]
-    cmp cx, [MTYValue]
-    jne NotCollidingM
-    mov cx, 10
-    MTLoop:
-        sub [total_time], 1
-        cmp [total_time], 0
-        je FMT
-        loop MTLoop
-    FMT:
-        mov [MTXValue],  656
-        mov [MTYValue],  400
+        mov cx, [pos_y_one]
+        cmp cx, [finish_y_value]
+        jne Player_One_Not_Coll_Fin
 
-    NotCollidingM:
-    mov cx, [pos_x]
-    cmp cx, [PTXValue]
-    jne NotColliding
+        mov [finish_x_value], 656
+        mov [finish_y_value], 400
 
-    mov cx, [pos_y]
-    cmp cx, [PTYValue]
-    jne NotColliding
-    add [total_time], 5
-    mov [PTXValue], 656
-    mov [PTYValue], 400
+        mov cx, 2
+    End_Level_Loop:
+        sub [total_first_time], 1
+        cmp [total_first_time], 0
+        je Next_Level
+        loop End_Level_Loop
+    
+    Next_Level:
+        mov [time], 1
 
-    NotColliding:
+
+    Player_One_Not_Coll_Fin:
+        mov cx, [pos_x_two]
+        cmp cx, [finish_x_value]
+        jne No_Coll_With_Fin
+
+        mov cx, [pos_y_two]
+        cmp cx, [finish_y_value]
+        jne No_Coll_With_Fin
+
+        mov [finish_x_value], 656
+        mov [finish_y_value], 400
+        
+        mov cx, 2
+    End_Level_Loop_Two:
+        sub [total_second_time], 1
+        cmp [total_second_time], 0
+        je Next_Level_Two
+        loop End_Level_Loop_Two
+    
+    Next_Level_Two:
+        mov [time], 1
+
+
+    No_Coll_With_Fin:
+        mov cx, [pos_x_one]
+        cmp cx, [speed_x_value]
+        jne No_Coll_With_Fin_Two
+
+        mov cx, [pos_y_one]
+        cmp cx, [speed_y_value]
+        jne No_Coll_With_Fin_Two
+
+        mov [speed], 1
+        mov ah, 03h 
+        mov al, 05h
+        mov bh, 00h
+        mov bl, 06h
+        int 16h
+
+        mov [speed_x_value], 656
+        mov [speed_y_value], 400
+
+
+    No_Coll_With_Fin_Two:
+        mov cx, [pos_x_two]
+        cmp cx, [speed_x_value]
+        jne No_Coll_Speed_One
+
+        mov cx, [pos_y_two]
+        cmp cx, [speed_y_value]
+        jne No_Coll_Speed_One
+
+        mov [speed], 1
+        mov ah, 03h 
+        mov al, 05h
+        mov bh, 00h
+        mov bl, 06h
+        int 16h
+
+        mov [speed_x_value], 656
+        mov [speed_y_value], 400
+
+    
+    No_Coll_Speed_One:
+        mov cx, [pos_x_one]
+        cmp cx, [speed_two_x_value]
+        jne No_Coll_Speed_One_Two
+
+        mov cx, [pos_y_one]
+        cmp cx, [speed_two_y_value]
+        jne No_Coll_Speed_One_Two
+
+        mov [speed], 1
+        mov ah, 03h 
+        mov al, 05h
+        mov bh, 00h
+        mov bl, 06h
+        int 16h
+
+        mov [speed_two_x_value], 656
+        mov [speed_two_y_value], 400
+
+
+    No_Coll_Speed_One_Two:
+        mov cx, [pos_x_two]
+        cmp cx, [speed_two_x_value]
+        jne Not_Coll_Speed
+
+        mov cx, [pos_y_two]
+        cmp cx, [speed_two_y_value]
+        jne Not_Coll_Speed
+
+        mov [speed], 1
+        mov ah, 03h 
+        mov al, 05h
+        mov bh, 00h
+        mov bl, 06h
+        int 16h
+
+        mov [speed_two_x_value], 656
+        mov [speed_two_y_value], 400
+
+
+    Not_Coll_Speed:
+        mov cx, [pos_x_one]
+        cmp cx, [minus_time_x_value]
+        jne Not_Coll_Speed_Two
+
+        mov cx, [pos_y_one]
+        cmp cx, [minus_time_y_value]
+        jne Not_Coll_Speed_Two
+        
+        mov cx, 5
+    Minus_Time_Loop:
+        sub [total_first_time], 1
+        cmp [total_first_time], 0
+        je Finish_Minus_Time
+        loop Minus_Time_Loop
+    
+    Finish_Minus_Time:
+        mov [minus_time_x_value],  656
+        mov [minus_time_y_value],  400
+    
+
+    Not_Coll_Speed_Two:
+        mov cx, [pos_x_two]
+        cmp cx, [minus_time_x_value]
+        jne Not_Colliding_Minus
+
+        mov cx, [pos_y_two]
+        cmp cx, [minus_time_y_value]
+        jne Not_Colliding_Minus
+
+        mov cx, 5
+    Minus_Time_Loop_Two:
+        sub [total_second_time], 1
+        cmp [total_second_time], 0
+        je Finish_Minus_Time_Two
+        loop Minus_Time_Loop_Two
+    
+    Finish_Minus_Time_Two:
+        mov [minus_time_x_value],  656
+        mov [minus_time_y_value],  400
+
+
+    Not_Colliding_Minus:
+        mov cx, [pos_x_one]
+        cmp cx, [plus_time_x_value]
+        jne Not_Colliding_Minus_Two
+
+        mov cx, [pos_y_one]
+        cmp cx, [plus_time_y_value]
+        jne Not_Colliding_Minus_Two
+
+        add [total_first_time], 10
+        mov [plus_time_x_value], 656
+        mov [plus_time_y_value], 400
+
+
+    Not_Colliding_Minus_Two:
+        mov cx, [pos_x_two]
+        cmp cx, [plus_time_x_value]
+        jne Not_Colliding
+
+        mov cx, [pos_y_two]
+        cmp cx, [plus_time_y_value]
+        jne Not_Colliding
+
+        add [total_second_time], 10
+        mov [plus_time_x_value], 656
+        mov [plus_time_y_value], 400
+
+    Not_Colliding:
+        pop dx
         pop cx
         ret
 endp CheckCollision
 
 
-; print a variable to screen: offset saved in bp, dh - row, dl - column, bl - color.
+; dh - row, dl - column.
 proc MovCrsr
 	push ax
 	push bx
@@ -297,18 +601,19 @@ endp MovCrsr
 proc RandomXValue
     push bx
     push cx
-    mov AH, 00h  ; interrupts to get system time.
+    mov ah, 00h  ; interrupts to get system time.
    	int 1Ah      ; cx:dx now hold number of clock ticks since midnight.
 
-	mov  ax, dx
-	xor  dx, dx
+	mov ax, dx
+	xor dx, dx
     xor cx, cx
-    mov cl, [XBScreen]
+    mov cl, [screen_blocks_x]
     sub cx, bx
-	div  cx
-    add  dx, bx
-    shl  dx, spacing
-    pop  cx
+	div cx
+    add dx, bx
+    shl dx, spacing
+
+    pop cx
     pop bx
     ret
 endp RandomXValue
@@ -316,20 +621,23 @@ endp RandomXValue
 
 proc RandomYValue
     push cx
-    mov AH, 00h  ; interrupts to get system time.
+
+    mov ah, 00h  ; interrupts to get system time.
    	int 1Ah      ; cx:dx now hold number of clock ticks since midnight.
 
-	mov  ax, dx
-	xor  dx, dx
+	mov ax, dx
+	xor dx, dx
     xor cx, cx
-    mov cl, [YBScreen]
+    mov cl, [screen_blocks_y]
     sub cx, bx
-	div  cx
-    add  dx, bx
-    shl  dx, spacing
+	div cx
+    add dx, bx
+    shl dx, spacing
+
     pop  cx
     ret
 endp RandomYValue
+
 
 ; draw a character: offset saved in bx, position in (cx, dx).
 proc DrawCharacter
@@ -340,33 +648,35 @@ proc DrawCharacter
     mov bp, cx
     xor ax, ax
 
-	Draw_line_loop:
+	Draw_Line_Loop:
 		mov al, [bx]
 		cmp al, '$'
-		je End_line_loop
+		je End_Line_Loop
 
         cmp al, 't'
-		jne Newline
-          inc cx
-		  inc bx
-		  jmp Draw_line_loop
-		
-    Newline:
-		cmp al, 'n'
-		jne Skip_new_line
-          mov cx, bp
-          inc dx
-		  inc bx
-		  jmp Draw_line_loop
+		jne New_Line
 
-    Skip_new_line:
+        inc cx
+		inc bx
+		jmp Draw_Line_Loop
+		
+    New_Line:
+		cmp al, 'n'
+		jne Skip_New_Line
+
+        mov cx, bp
+        inc dx
+		inc bx
+		jmp Draw_Line_Loop
+
+    Skip_New_Line:
         mov [color], al
 		call DrawPix
 		inc cx
 		inc bx
-		jmp Draw_line_loop
+		jmp Draw_Line_Loop
 		
-	End_line_loop:
+	End_Line_Loop:
 		pop cx
 		pop ax
 		pop bx
@@ -376,35 +686,38 @@ endp DrawCharacter
 
 
 proc Random
-        push cx
-        push ax
+    push cx
+    push ax
         
-        xor ax,ax
-        int 1ah     ; int 1ah/ah=0 get timer ticks since midnight in cx:dx.
-        sub ax, cx  ; use lower 16 bits (in dx) for random value.
-        add ax, dx
-        xor dx,dx               
-        div bx
+    xor ax, ax
+    int 1Ah     ; int 1ah/ah=0 get timer ticks since midnight in cx:dx.
+    sub ax, cx  ; use lower 16 bits (in dx) for random value.
+    add ax, dx
+    xor dx, dx
+    div bx
 
-        pop ax
-        pop cx
-        ret
+    pop ax
+    pop cx
+    ret
 endp Random
+
 
 proc PrepMazeIndex
     push ax
     xor ax, ax
+
     mov ah, [byte maze_index]
     mov dx, 252
     mul dx
     mov [maze_index], ax
+
     pop ax
     ret
 endp PrepMazeIndex
 
+
 proc GenerateMaze
     call EraseMaze
-    ; mov [maze + 19], 1011b
     push dx
     push [maze_index]
     mov bx, 12
@@ -420,24 +733,24 @@ proc GenerateMaze
     add bx, [maze_index]
     or [maze + bx], 10000B
 
-    GeneretionLoop:
+    Generetion_Loop:
         mov cx, 0
         mov dx, 1
 	    mov ah, 86h
 	    int 15h
 
         cmp [base_sp], sp
-        je EndGeneretionLoop1
+        je End_Generetion_Loop_One
         pop cx
         call GetNeighbours
         cmp [neighbour_count], 0
-        jne HasNeighbours
-        jmp GeneretionLoop
+        jne Has_Neighbours
+        jmp Generetion_Loop
 
-    EndGeneretionLoop1:
-        jmp EndGeneretionLoop
+    End_Generetion_Loop_One:
+        jmp End_Generetion_Loop
 
-    HasNeighbours:
+    Has_Neighbours:
         push cx
         xor bx, bx
         mov bl, [neighbour_count]
@@ -479,12 +792,12 @@ proc GenerateMaze
         mov al, [byte neighbours]
         and ax, 0001B       
         cmp ax, 0001B
-        jne EndIndexChosing
+        jne End_Index_Choosing
         inc bx
         mov [neighbours_indexes + bx], cl
         dec [neighbours_indexes + bx]
 
-    EndIndexChosing:
+    End_Index_Choosing:
         mov bx, dx
         mov dl, [byte neighbours_indexes + bx]
 
@@ -528,7 +841,7 @@ proc GenerateMaze
         mov ax, cx
         dec ax
         cmp dx, ax
-        jne EndBorderRemoving
+        jne End_Border_Removing
         mov bx, cx
         add bx, [maze_index]
         and [maze + bx], 11110B
@@ -536,16 +849,16 @@ proc GenerateMaze
         add bx, [maze_index]
         and [maze + bx], 11011B
 
-    EndBorderRemoving:
+    End_Border_Removing:
         xor ax, ax
         mov bx, dx
         add bx, [maze_index]
         add [maze + bx], 10000B
         mov bl, [maze + bx]
         push dx
-        jmp GeneretionLoop
+        jmp Generetion_Loop
 
-    EndGeneretionLoop:
+    End_Generetion_Loop:
         pop [maze_index]
         pop dx
         ret 
@@ -616,7 +929,7 @@ proc GetNeighbours
         div bx
         pop ax
         cmp dx, 0
-        je EndNeighbourSearch
+        je End_Neighbour_Search
         mov bx, cx
         dec bx
         add bx, offset maze
@@ -624,11 +937,11 @@ proc GetNeighbours
         mov bx, [bx]
         and bx, 10000B
         cmp bx, 10000B
-        je EndNeighbourSearch
+        je End_Neighbour_Search
         inc [neighbour_count]
         or [neighbours], 0001B
 
-    EndNeighbourSearch:
+    End_Neighbour_Search:
         pop bx
         pop ax
         pop dx
@@ -639,129 +952,330 @@ endp GetNeighbours
 
 
 proc GetInput
-    mov cx, [pos_x]
-    mov dx, [pos_y]
+    mov cx, [pos_x_one]
+    mov dx, [pos_y_one]
     shr cx, spacing
     shr dx, spacing
 
     call GetAllMazesIndex
     mov bx, ax
 
-
     xor ax, ax
     mov ah, 1
     int 16h
-    jz Next_k
+    jz Next_K
     
     ; get value:
     mov ah, 0
     int 16h
     
     ; parse the input:
-    cmp ah, 1 ; esc
-	je Esc_pressed
+    cmp ah, 1h ; esc
+	je Esc_Pressed
 	
     cmp ah, 1bh ; esc
-	je Esc_pressed
+	je Esc_Pressed
 	
     cmp ah, 48h ; up arrow
-	je Up_pressed
+	je Up_Pressed_Middle_Label
 	
     cmp ah, 50h ; down arrow
-	je Down_pressed
+	je Down_Pressed_Middle_Label
 	
     cmp ah, 4bh ; left arrow
-	je Left_pressed
+	je Left_Pressed_Middle_Label
 	
     cmp ah, 4dh ; right arrow
-	je Right_pressed
+	je Right_Pressed_Middle_Label
+
+    cmp ah, 11h ; 'w'
+    je W_Pressed_Middle_Label
+
+    cmp ah, 1Fh ; 's'
+    je S_Pressed_Middle_Label
+
+    cmp ah, 1Eh ; 'a'
+    je A_Pressed_Middle_Label
+
+    cmp ah, 20h ; 'd'
+    je D_Pressed_Middle_Label
 	
     ret
-    
-    Next_k:
-        ret
-    
+
     ; load the command codes:
-    Esc_pressed:
+    Esc_Pressed:
         jmp Exit
         ret
 
-    Up_pressed:
+    Next_K:
+        jmp Check_Direction
+
+    Up_Pressed_Middle_Label:
+        mov [direction_one], 0
+        jmp Check_Direction
+    
+    Down_Pressed_Middle_Label:
+        mov [direction_one], 1
+        jmp Check_Direction
+
+    Left_Pressed_Middle_Label:
+        mov [direction_one], 2
+        jmp Check_Direction
+
+    Right_Pressed_Middle_Label:
+        mov [direction_one], 3
+        jmp Check_Direction
+
+    W_Pressed_Middle_Label:
+        mov [direction_two], 0
+        jmp Check_Direction
+    
+    S_Pressed_Middle_Label:
+        mov [direction_two], 1
+        jmp Check_Direction
+
+    A_Pressed_Middle_Label:
+        mov [direction_two], 2
+        jmp Check_Direction
+
+    D_Pressed_Middle_Label:
+        mov [direction_two], 3
+        jmp Check_Direction
+
+
+    Check_Direction:
+        cmp [direction_one], 0
+        je Up_Pressed
+
+        cmp [direction_one], 1
+        je Down_Pressed
+
+        cmp [direction_one], 2
+        je Left_Pressed
+
+        cmp [direction_one], 3
+        je Right_Pressed
+
+
+    Up_Pressed:
+        mov bx, [bx]
+        and bx, 1000B
+        cmp bx, 1000B
+        je Check_Direction_Two
+
+        cmp [pos_y_one], 10
+        jl Check_Direction_Two
+        call EraseWData
+
+	    sub [word pos_y_one], step
+        jmp Check_Direction_Two
+
+    Down_Pressed:
+        mov bx, [bx]
+        and bx, 0010B
+        cmp bx, 0010B
+        je Check_Direction_Two
+
+        cmp [pos_y_one], y_screen - step - tile ; 320(x) * 200(y) but 200 / 16 = 12.5.
+        jg Check_Direction_Two
+        call EraseWData
+
+	    add [word pos_y_one], step
+        jmp Check_Direction_Two
+
+    Left_Pressed:
+        mov bx, [bx]
+        and bx, 0001B
+        cmp bx, 0001B
+        je Check_Direction_Two
+
+        cmp [pos_x_one], 2
+        jl Check_Direction_Two
+        call EraseWData
+
+	    sub [word pos_x_one], step
+        jmp Check_Direction_Two
+
+    Right_Pressed:
+        mov bx, [bx]
+        and bx, 0100B
+        cmp bx, 0100B
+        je Check_Direction_Two
+
+        cmp [pos_x_one], x_screen - step - tile
+        jg Check_Direction_Two
+        call EraseWData
+
+	    add [word pos_x_one], step
+        jmp Check_Direction_Two
+
+    Border:
+        ret
+
+    Check_Direction_Two:
+        cmp [direction_two], 0
+        je W_Pressed
+
+        cmp [direction_two], 1
+        je S_Pressed
+
+        cmp [direction_two], 2
+        je A_Pressed
+
+        cmp [direction_two], 3
+        je D_Pressed_Middle_Middle_Label
+    
+
+    W_Pressed:
+        mov cx, [pos_x_two]
+        mov dx, [pos_y_two]
+        shr cx, spacing
+        shr dx, spacing
+
+        call GetAllMazesIndex
+        mov bx, ax
+
         mov bx, [bx]
         and bx, 1000B
         cmp bx, 1000B
         je Border
-        cmp [pos_y], 10
-        jl Next_k
-        call EraseWData
-	    sub [word pos_y], step
+        cmp [pos_y_two], 10
+        jl Border   ; Next_k_Two
+        call EraseWData_Two
+	    sub [word pos_y_two], step
             ret
 
-    Down_pressed:
+    S_Pressed:
+        mov cx, [pos_x_two]
+        mov dx, [pos_y_two]
+        shr cx, spacing
+        shr dx, spacing
+    
+        call GetAllMazesIndex
+        mov bx, ax
+
         mov bx, [bx]
         and bx, 0010B
         cmp bx, 0010B
         je Border
-        cmp [pos_y], YScreen - step - tile ; 320(x) * 200(y) but 200 / 16 = 12.5.
-        jg Next_k
-        call EraseWData
-	    add [word pos_y], step
+        cmp [pos_y_two], y_screen - step - tile ; 320(x) * 200(y) but 200 / 16 = 12.5.
+        jg Next_K_Two
+        call EraseWData_Two
+	    add [word pos_y_two], step
             ret
 
-    Left_pressed:
+    D_Pressed_Middle_Middle_Label:
+        jmp D_Pressed
+
+    A_Pressed:
+        mov cx, [pos_x_two]
+        mov dx, [pos_y_two]
+        shr cx, spacing
+        shr dx, spacing
+    
+        call GetAllMazesIndex
+        mov bx, ax
+
         mov bx, [bx]
         and bx, 0001B
         cmp bx, 0001B
-        je Border
-        cmp [pos_x], 2
-        jl Next_k
-        call EraseWData
-	    sub [word pos_x], step
+        je Border_Two
+        cmp [pos_x_two], 2
+        jl Next_K_Two
+        call EraseWData_Two
+	    sub [word pos_x_two], step
             ret
 
-    Right_pressed:
+    D_Pressed:
+        mov cx, [pos_x_two]
+        mov dx, [pos_y_two]
+        shr cx, spacing
+        shr dx, spacing
+    
+        call GetAllMazesIndex
+        mov bx, ax
+        
         mov bx, [bx]
         and bx, 0100B
         cmp bx, 0100B
-        je Border
-        cmp [pos_x], XScreen - step - tile
-        jg Next_k
-        call EraseWData
-	    add [word pos_x], step
+        je Border_Two
+        cmp [pos_x_two], x_screen - step - tile
+        jg Next_K_Two
+        call EraseWData_Two
+	    add [word pos_x_two], step
             ret
-
-    Border:
+    
+    Next_K_Two:
+        ret
+    
+    Border_Two:
         ret
 endp GetInput
+
+
+proc MovePlayers
+    mov cx, [word pos_x_two]
+    mov dx, [word pos_y_two]
+    mov bx, offset playerTwo
+    call DrawCharacter
+
+    mov cx, [word pos_x_one]
+    mov dx, [word pos_y_one]
+    mov bx, offset playerOne
+    call DrawCharacter
+
+    ret
+endp MovePlayers
+
 
 proc EraseWData
     push dx
     push cx
+
     mov [color], 0h
-    mov ax, [word pos_x]
-    mov dx, [word pos_y]
+    mov ax, [word pos_x_one]
+    mov dx, [word pos_y_one]
     call EraseChar
+
     pop cx
     pop dx
     ret
 endp EraseWData
 
+
+proc EraseWData_Two
+    push dx
+    push cx
+
+    mov [color], 0h
+    mov ax, [word pos_x_two]
+    mov dx, [word pos_y_two]
+    call EraseChar
+
+    pop cx
+    pop dx
+    ret
+endp EraseWData_Two
+
+
 ; get x cord in cx and y cord in dx.
 proc DrawPix
     push ax
+
     mov ah, 0ch
-    add cx, [Xoffset]
-    add dx, [Yoffset]
+    add cx, [offset_x]
+    add dx, [offset_y]
     mov al, [color]
-    int 10h 
-    sub cx, [Xoffset]
-    sub dx, [Yoffset]
+    int 10h
+    sub cx, [offset_x]
+    sub dx, [offset_y]
+
     pop ax
     ret
 endp DrawPix
 
 
-;; get x cord in ax and dx in y cord.
+; get x cord in ax and dx in y cord.
 proc DrawTile
     push bp
     mov bp, sp 
@@ -769,15 +1283,16 @@ proc DrawTile
     push ax ; bp - 4.
     push cx ; bp - 6.
     push bx ; bp - 8.
+
     cmp [player_print], 1 ; temp.
-    je TilePrint ; temp.
+    je Tile_Print ; temp.
     shl dx, spacing
     shl ax, spacing
 
-    TilePrint:
+    Tile_Print:
         add dx, tile ; y.
         add ax, tile ; x.
-        mov cx, tile 
+        mov cx, tile
 
         Y:
             push cx ; bp - 10.
@@ -789,46 +1304,42 @@ proc DrawTile
                 dec cx
                 dec dx ; turn 1 - 16 to 0 - 15.
 
-                Dborder:
+                Down_Border:
+                    and bx, 0010b
+                    cmp bx, 0010b
+                    jne Left_Border
+                    cmp [word bp - 10], tile
+                    je Print_Pix
 
-                and bx, 0010b
-                cmp bx, 0010b
-                jne Lborder
-                cmp [word bp - 10], tile
-                je PrintPix
+                Left_Border:
+                    mov bx, [bp - 8]
+                    and bx, 0001b
+                    cmp bx, 0001b
+                    jne Up_Border
+                    cmp [word bp - 12], 1
+                    je Print_Pix
 
-                Lborder:
+                Up_Border:
+                    mov bx, [bp - 8]
+                    and bx, 1000b
+                    cmp bx, 1000b
+                    jne Right_Border
+                    cmp [word bp - 10], 1
+                    je Print_Pix
 
-                mov bx, [bp - 8]
-                and bx, 0001b
-                cmp bx, 0001b
-                jne Uborder
-                cmp [word bp - 12], 1
-                je PrintPix
+                Right_Border:
+                    mov bx, [bp - 8]
+                    and bx, 0100b
+                    cmp bx, 0100b
+                    jne No_Printing_Area
+                    cmp [word bp - 12], tile
+                    je Print_Pix
+                    jmp No_Printing_Area
 
-                Uborder:
-
-                mov bx, [bp - 8]
-                and bx, 1000b
-                cmp bx, 1000b
-                jne Rborder
-                cmp [word bp - 10], 1
-                je PrintPix
-
-                Rborder:
-
-                mov bx, [bp - 8]
-                and bx, 0100b
-                cmp bx, 0100b
-                jne NoPrintingArea
-                cmp [word bp - 12], tile
-                je PrintPix
-                jmp NoPrintingArea
-
-                PrintPix:
+                Print_Pix:
                     call DrawPix
 
-                NoPrintingArea:
+                No_Printing_Area:
                     inc dx
                     pop cx
                     dec ax
@@ -852,7 +1363,7 @@ endp DrawTile
 ; get x cord in ax and dx in y cord.
 proc EraseChar
     push dx
-    push ax 
+    push ax
     push cx
     push bx
     mov [color], 0h
@@ -860,13 +1371,13 @@ proc EraseChar
     Erase:
         add dx, tile ; y.
         add ax, tile ; x.
-        mov cx, tile 
+        mov cx, tile
         sub dx, 2
         sub ax, 2
         sub cx, 2
 
         EY:
-            push cx ;
+            push cx
             mov cx, tile
             sub cx, 2
              
@@ -899,17 +1410,17 @@ proc EraseMaze
     add bx, [maze_index]
     add bx, 251
 
-    EraseMazeLoop:
+    Erase_Maze_Loop:
         cmp [byte bx], 'n'
         je Move
         mov [byte bx], 15
 
     Move:
         dec bx
-        mov cx, offset maze - 1 
+        mov cx, offset maze - 1
         add cx, [maze_index]
         cmp bx, cx 
-        jne EraseMazeLoop
+        jne Erase_Maze_Loop
         
     pop cx
     pop bx
@@ -930,57 +1441,62 @@ proc GetIndex
     ret
 endp GetIndex
 
+
 proc GetAllMazesIndex
     push [maze_index]
-    ; TLC:
-    cmp dx, 11
-    jg RTC
-    cmp cx, 19
-    jg RTC
-    mov [maze_index], 0
-    push dx
-    call PrepMazeIndex
-    pop dx
-    call GetIndex
+    
+    TLC:
+        cmp dx, 11
+        jg RTC
+        cmp cx, 19
+        jg RTC
+        mov [maze_index], 0
+        push dx
+        call PrepMazeIndex
+        pop dx
+        call GetIndex
+
     RTC:
-    cmp dx, 11
-    jg LBC
-    cmp cx, 20
-    jl LBC
-    sub cx, 20
-    mov [maze_index], 1
-    push dx
-    call PrepMazeIndex
-    pop dx
-    call GetIndex
-    jmp RetGetAllMazesIndex
+        cmp dx, 11
+        jg LBC
+        cmp cx, 20
+        jl LBC
+        sub cx, 20
+        mov [maze_index], 1
+        push dx
+        call PrepMazeIndex
+        pop dx
+        call GetIndex
+        jmp Ret_Get_All_Mazes_Index
+
     LBC:
-    cmp dx, 12
-    jl RBC
-    cmp cx, 19
-    jg RBC
-    sub dx, 12
-    mov [maze_index], 2
-    push dx
-    call PrepMazeIndex
-    pop dx
-    call GetIndex
+        cmp dx, 12
+        jl RBC
+        cmp cx, 19
+        jg RBC
+        sub dx, 12
+        mov [maze_index], 2
+        push dx
+        call PrepMazeIndex
+        pop dx
+        call GetIndex
+    
     RBC:
-    cmp dx, 12
-    jl RetGetAllMazesIndex
-    cmp cx, 20
-    jl RetGetAllMazesIndex
-    sub dx, 12
-    sub cx, 20
-    mov [maze_index], 3
-    push dx
-    call PrepMazeIndex
-    pop dx
-    call GetIndex
-    jmp RetGetAllMazesIndex
-    RetGetAllMazesIndex:
-    pop [maze_index]
-    ret
+        cmp dx, 12
+        jl Ret_Get_All_Mazes_Index
+        cmp cx, 20
+        jl Ret_Get_All_Mazes_Index
+        sub dx, 12
+        sub cx, 20
+        mov [maze_index], 3
+        push dx
+        call PrepMazeIndex
+        pop dx
+        call GetIndex
+    
+    Ret_Get_All_Mazes_Index:
+        pop [maze_index]
+        ret
 endp GetAllMazesIndex
 
 
@@ -1005,101 +1521,88 @@ proc DrawMaze
         mov bx, ax
         mov ax, cx
         cmp [byte bx], 0
-        je DontFillSpace
+        je Dont_Fill_Space
         mov [player_print], 0
         push bx
         mov bx, [word bx]
         call DrawTile
         pop bx
         mov [player_print], 1
-        jmp DontFillSpace
+        jmp Dont_Fill_Space
 
-    DontFillSpace:
+    Dont_Fill_Space:
         pop cx
         loop mazeX
         pop cx
         loop MazeY
+    
     pop cx
     pop ax
     pop dx
     ret 
-endp DrawMaze    
+endp DrawMaze
 
 
-proc Print
-    ; initilize count:
-    mov cx,0
-    mov dx,0
+proc Print_Numeric_Var
+    mov cx, 0
+    mov dx, 0
 
-    Label1:
-        ; if ax is zero:
-        cmp ax,0
-        je Print1
+    Printing_Label:
+        cmp ax, 0
+        je Print
         
-        ; initilize bx to 10:
-        mov bx,10
-        
-        ; extract the last digit:
+        mov bx, 10
         div bx
-        
-        ; push it in the stack:
         push dx
-        
-        ; increment the count:
         inc cx
         
-        ; set dx to 0:
-        xor dx,dx
-        jmp Label1
+        xor dx, dx
+        jmp Printing_Label
 
-    Print1:
-        ; check if count:
-
-        ; is greater than zero:
-        cmp cx,0
-        je Endprint
+    Print:
+        cmp cx, 0
+        je End_Print
         
-        ; pop the top of stack:
         pop dx
-
-        ; add 48 so that it represents the ASCII value of digits:
         add dx, '0' 
-        
-        ; interuppt to print a character:
         mov ah,02h
         int 21h
         
-        ; decrease the count:
         dec cx
-        jmp Print1
+        jmp Print
     
-    Endprint:
+    End_Print:
         ret
-endp print
+endp Print_Numeric_Var
+
 
 proc PrintInfo
-    push bx 
+    push bx
     mov dl, [info_space]
     mov dh, 24
     call MovCrsr
 
-    lea dx, [time_message]  
-    mov ah,09h 
-    int 21h          
+    lea dx, [first_time_message]
+    mov ah,09h
+    int 21h
 
     xor ax, ax
-    mov ax, [total_time]
-    call Print
+    mov ax, [total_first_time]
+    call Print_Numeric_Var
 
-    mov bl, [level]
-    add bl, "0"
+    lea dx, [second_time_message]
+    mov ah, 09h
+    int 21h
 
-    mov [lvl_message + 9], bl
-    lea dx, [lvl_message]  
-    mov ah,09h 
-    int 21h          
+    xor ax, ax
+    mov ax, [total_second_time]
+    call Print_Numeric_Var
+
+    lea dx, [spaces_message]
+    mov ah, 09h
+    int 21h
+    
     pop bx
-
     ret
 endp PrintInfo
 
@@ -1108,86 +1611,136 @@ proc GenerateTokens
     push bx
     xor bx, bx
     mov bx, 1
-    cmp [time], 44
+
+    cmp [time], 41
     je SBS
-    cmp [time], 33
+    cmp [time], 30
     je SBS
-    cmp [time], 23
-    jne MT
+    cmp [time], 19
+    jne Check_SpeedB2
+
     SBS:
-    mov ax, [SXValue]
-    mov dx, [SYValue]
-    cmp ax, 656
-    je DontES
-    call EraseChar
-    DontES:
-    call RandomXValue
-    mov cx, dx
-    mov [SXValue], cx
-    call RandomYValue
-    mov [SYValue], dx
-    mov bx, offset speedB
-    call DrawCharacter
+        mov ax, [speed_x_value]
+        mov dx, [speed_y_value]
+        cmp ax, 656
+        je Dont_ES
+        call EraseChar
+    
+    Dont_ES:
+        call RandomXValue
+        mov cx, dx
+        mov [speed_x_value], cx
+        call RandomYValue
+        mov [speed_y_value], dx
+        mov bx, offset speedBoost
+        call DrawCharacter
+
+        mov cx, [finish_x_value]
+        mov dx, [finish_y_value]
+        mov bx, offset finishKey
+        call DrawCharacter
+
+    Check_SpeedB2:
+        cmp [time], 37
+        je SBS_Two
+        cmp [time], 26
+        je SBS_Two
+        cmp [time], 16
+        jne MT
+
+    SBS_Two:
+        mov ax, [speed_two_x_value]
+        mov dx, [speed_two_y_value]
+        cmp ax, 656
+        je Dont_ES_Two
+        call EraseChar
+    
+    Dont_ES_Two:
+        call RandomXValue
+        mov cx, dx
+        mov [speed_two_x_value], cx
+        call RandomYValue
+        mov [speed_two_y_value], dx
+        mov bx, offset speedBoost2
+        call DrawCharacter
+
+        mov cx, [finish_x_value]
+        mov dx, [finish_y_value]
+        mov bx, offset finishKey
+        call DrawCharacter
 
     MT:
-    cmp [time], 41
-    je MTS
-    cmp [time], 37
-    je MTS
-    cmp [time], 20
-    jne PT
+        cmp [time], 41
+        je MTS
+        cmp [time], 37
+        je MTS
+        cmp [time], 20
+        jne PT
+    
     MTS:
-    mov ax, [MTXValue]
-    mov dx, [MTYValue]
-    cmp ax, 656
-    je DontEMT
-    call EraseChar
-    DontEMT:
-    call RandomXValue
-    mov cx, dx
-    mov [MTXValue], cx
-    call RandomYValue
-    mov [MTYValue], dx
-    mov bx, offset Minustime
-    call DrawCharacter
+        mov ax, [minus_time_x_value]
+        mov dx, [minus_time_y_value]
+        cmp ax, 656
+        je Dont_EMT
+        call EraseChar
+    
+    Dont_EMT:
+        call RandomXValue
+        mov cx, dx
+        mov [minus_time_x_value], cx
+        call RandomYValue
+        mov [minus_time_y_value], dx
+        mov bx, offset minusTime
+        call DrawCharacter
+
+        mov cx, [finish_x_value]
+        mov dx, [finish_y_value]
+        mov bx, offset finishKey
+        call DrawCharacter
 
     PT:
-    xor ax, ax
-    mov ah, [time]
-    xor dx, dx
-    mov cx, 3
-    div cx
-    cmp dx, 0
-    jne FG
+        xor ax, ax
+        mov ah, [time]
+        xor dx, dx
+        mov cx, 3
+        div cx
+        cmp dx, 0
+        jne FG
+    
     PTS:
-    mov ax, [PTXValue]
-    mov dx, [PTYValue]
-    cmp ax, 656
-    je DontEPT
-    call EraseChar
-    DontEPT:
-    call RandomXValue
-    mov cx, dx
-    mov [PTXValue], cx
-    call RandomYValue
-    mov [PTYValue], dx
-    mov bx, offset Plustime
-    call DrawCharacter
-    FG:
-    pop bx
-    ret
+        mov ax, [plus_time_x_value]
+        mov dx, [plus_time_y_value]
+        cmp ax, 656
+        je Dont_EPT
+        call EraseChar
+    
+    Dont_EPT:
+        call RandomXValue
+        mov cx, dx
+        mov [plus_time_x_value], cx
+        call RandomYValue
+        mov [plus_time_y_value], dx
+        mov bx, offset plusTime
+        call DrawCharacter
 
+        mov cx, [finish_x_value]
+        mov dx, [finish_y_value]
+        mov bx, offset finishKey
+        call DrawCharacter
+    
+    FG:
+        pop bx
+        ret
 endp GenerateTokens
 
+
 proc ResetMaze1
-    mov [time], 25
-    mov [byte XBScreen], 20
-    mov [byte YBScreen], 12
-    ; mov ax, 0600h    ; 06 to scroll & 00 for full screen.
-    ; mov bh, 0h       ; attribute 7 for background and 1 for foreground.
-    ; mov cx, 0h       ; starting coordinates.
-    ; mov dx, 1000h    ; ending coordinates.
-    ; int 10h
+    mov [direction_one], 0
+    mov [direction_two], 0
+
+    mov [time], 22
+    mov [byte screen_blocks_x], 20
+    mov [byte screen_blocks_y], 12
 
     mov ax, 3h
     int 10h
@@ -1197,27 +1750,23 @@ proc ResetMaze1
 
     int 10h  
 
-    mov [XValue], 656
-    mov [YValue], 400
+    mov [finish_x_value], 656
+    mov [finish_y_value], 400
  
-    mov [SXValue], 656
-    mov [SYValue], 400
+    mov [speed_x_value], 656
+    mov [speed_y_value], 400
  
-    mov [PTXValue], 656
-    mov [PTYValue], 400
+    mov [plus_time_x_value], 656
+    mov [plus_time_y_value], 400
  
-    mov [MTXValue],  656
-    mov [MTYValue],  400
+    mov [minus_time_x_value],  656
+    mov [minus_time_y_value],  400
 
-    ; mov ax, 4F02h
-    ; mov bx, 100h
-    ; int 10h  
+    mov [pos_x_one], 0
+    mov [pos_y_one], 0
 
-    ; push ax
-    ; push bx
-
-    mov [pos_x], 0
-    mov [pos_y], 0
+    mov [pos_x_two], 0
+    mov [pos_y_two], 0
 
     ; change keyboard refresh rate to match delay between frames.
     mov ah, 03h 
@@ -1226,22 +1775,11 @@ proc ResetMaze1
     mov bl, 08h
     int 16h
 
-    ; pop bx
-    ; pop ax
-
     mov [color], 0fh
-
     xor ax, ax
-
     call PrepMazeIndex
-
     call GenerateMaze
-    ; maze equ mazeTR
-    ; call GenerateMaze
-  ; maze color.
     call DrawMaze
-
-    ; call GenerateTokens
 
     xor bx, bx
     push bx
@@ -1249,59 +1787,52 @@ proc ResetMaze1
     add bx, 3
     call RandomXValue
     mov cx, dx
-    mov [XValue], dx
+    mov [finish_x_value], dx
     call RandomYValue
-    mov [YValue], dx
-    mov bx, offset finish
+    mov [finish_y_value], dx
+    mov bx, offset finishKey
     call DrawCharacter
     pop bx
 
-    mov [speed], 1
-
+    mov [speed], 25000
     ret
 endp ResetMaze1
 
-proc ResetMaze2
-    mov [Xoffset], 0
-    mov [Yoffset], 0
-    mov [time], 50
-    mov [XBScreen], 40
-    mov [YBScreen], 12
 
-    ; mov ax, 0600h    ; 06 to scroll & 00 for full screen.
-    ; mov bh, 0h       ; attribute 7 for background and 1 for foreground.
-    ; mov cx, 0h       ; starting coordinates.
-    ; mov dx, 1000h    ; ending coordinates.
-    ; int 10h
+proc ResetMaze2
+    mov [direction_one], 0
+    mov [direction_two], 0
+
+    mov [offset_x], 0
+    mov [offset_y], 0
+    mov [time], 33
+    mov [screen_blocks_x], 40
+    mov [screen_blocks_y], 12
 
     mov ax, 3h
     int 10h
 
     mov ax, 4F02h
     mov bx, 100h
-    int 10h  
+    int 10h
 
-    mov [XValue], 656
-    mov [YValue], 400
+    mov [finish_x_value], 656
+    mov [finish_y_value], 400
  
-    mov [SXValue], 656
-    mov [SYValue], 400
+    mov [speed_x_value], 656
+    mov [speed_y_value], 400
  
-    mov [PTXValue], 656
-    mov [PTYValue], 400
+    mov [plus_time_x_value], 656
+    mov [plus_time_y_value], 400
  
-    mov [MTXValue],  656
-    mov [MTYValue],  400
+    mov [minus_time_x_value],  656
+    mov [minus_time_y_value],  400
 
-    ; mov ax, 4F02h
-    ; mov bx, 100h
-    ; int 10h  
+    mov [pos_x_one], 0
+    mov [pos_y_one], 0
 
-    ; push ax
-    ; push bx
-
-    mov [pos_x], 0
-    mov [pos_y], 0
+    mov [pos_x_two], 0
+    mov [pos_y_two], 0
 
     ; change keyboard refresh rate to match delay between frames.
     mov ah, 03h 
@@ -1310,32 +1841,22 @@ proc ResetMaze2
     mov bl, 08h
     int 16h
 
-    ; pop bx
-    ; pop ax
-
     mov [color], 0fh
-
     xor ax, ax
-
     call PrepMazeIndex
-
     call GenerateMaze
     and [maze + 19], 11011b
-    ; maze equ mazeTR
-    ; call GenerateMaze
-  ; maze color.
     call DrawMaze
 
     mov [maze_index], 1
     call PrepMazeIndex
     call GenerateMaze
-    mov [Xoffset], 320
+    mov [offset_x], 320
     mov bx, [maze_index]
     and [maze + bx], 1110b
-     
     call DrawMaze
      
-    mov [Xoffset], 0
+    mov [offset_x], 0
     mov [maze_index], 0
 
     xor bx, bx
@@ -1344,30 +1865,27 @@ proc ResetMaze2
     add bx, 8
     call RandomXValue
     mov cx, dx
-    mov [XValue], dx
+    mov [finish_x_value], dx
     call RandomYValue
-    mov [YValue], dx
-    mov bx, offset finish
+    mov [finish_y_value], dx
+    mov bx, offset finishKey
     call DrawCharacter
     pop bx
 
-    mov [speed], 1
-
+    mov [speed], 25000
     ret
 endp ResetMaze2
 
-proc ResetMaze3
-    mov [Xoffset], 0
-    mov [Yoffset], 0
-    mov [time], 50
-    mov [XBScreen], 40
-    mov [YBScreen], 24
 
-    ; mov ax, 0600h    ; 06 to scroll & 00 for full screen.
-    ; mov bh, 0h       ; attribute 7 for background and 1 for foreground.
-    ; mov cx, 0h       ; starting coordinates.
-    ; mov dx, 1000h    ; ending coordinates.
-    ; int 10h
+proc ResetMaze3
+    mov [direction_one], 0
+    mov [direction_two], 0
+
+    mov [offset_x], 0
+    mov [offset_y], 0
+    mov [time], 44
+    mov [screen_blocks_x], 40
+    mov [screen_blocks_y], 24
 
     mov ax, 3h
     int 10h
@@ -1376,27 +1894,23 @@ proc ResetMaze3
     mov bx, 100h
     int 10h  
 
-    mov [XValue], 656
-    mov [YValue], 400
+    mov [finish_x_value], 656
+    mov [finish_y_value], 400
  
-    mov [SXValue], 656
-    mov [SYValue], 400
+    mov [speed_x_value], 656
+    mov [speed_y_value], 400
  
-    mov [PTXValue], 656
-    mov [PTYValue], 400
+    mov [plus_time_x_value], 656
+    mov [plus_time_y_value], 400
  
-    mov [MTXValue],  656
-    mov [MTYValue],  400
+    mov [minus_time_x_value],  656
+    mov [minus_time_y_value],  400
 
-    ; mov ax, 4F02h
-    ; mov bx, 100h
-    ; int 10h  
+    mov [pos_x_one], 0
+    mov [pos_y_one], 0
 
-    ; push ax
-    ; push bx
-
-    mov [pos_x], 0
-    mov [pos_y], 0
+    mov [pos_x_two], 0
+    mov [pos_y_two], 0
 
     ; change keyboard refresh rate to match delay between frames.
     mov ah, 03h 
@@ -1405,68 +1919,57 @@ proc ResetMaze3
     mov bl, 08h
     int 16h
 
-    ; pop bx
-    ; pop ax
-
     mov [color], 0fh
-
     xor ax, ax
-
     call PrepMazeIndex
-
     call GenerateMaze
     and [maze + 19], 11011b
     and [maze + 231], 11101b
     and [maze + 250], 1001b
-    ; maze equ mazeTR
-    ; call GenerateMaze
-  ; maze color.
     call DrawMaze
 
     mov [maze_index], 1
     call PrepMazeIndex
     call GenerateMaze
-    mov [Xoffset], 320
+    mov [offset_x], 320
     mov bx, [maze_index]
     and [maze + bx], 1110b
     and [maze + bx + 231], 11100b
     and [maze + bx + 250], 11101b
-     
     call DrawMaze
      
-    mov [Xoffset], 0
+    mov [offset_x], 0
     mov [maze_index], 0
 
     mov [maze_index], 2
     call PrepMazeIndex
     call GenerateMaze
-    mov [Yoffset], 192
+    mov [offset_y], 192
     mov bx, [maze_index]
     and [maze + bx], 10111b
     and [maze + bx + 19], 0011b
     and [maze + bx + 250], 11011b
-
     call DrawMaze
     
-    mov [Yoffset], 0
+    mov [offset_y], 0
     mov [maze_index], 0
 
     mov [maze_index], 3
     call PrepMazeIndex
     call GenerateMaze
-    mov [Yoffset], 192
-    mov [Xoffset], 320
+    mov [offset_y], 192
+    mov [offset_x], 320
     mov bx, [maze_index]
     and [maze + bx], 10110b
     and [maze + bx + 19], 0111b
     and [maze + bx + 231], 1110b
     call DrawMaze
-    mov [Xoffset], 0
-    mov [Yoffset], 0
+
+    mov [offset_x], 0
+    mov [offset_y], 0
     mov [maze_index], 0
 
     call PrepMazeIndex
-
     call GenerateTokens
 
     xor bx, bx
@@ -1475,17 +1978,17 @@ proc ResetMaze3
     add bx, 8
     call RandomXValue
     mov cx, dx
-    mov [XValue], dx
+    mov [finish_x_value], dx
     call RandomYValue
-    mov [YValue], dx
-    mov bx, offset finish
+    mov [finish_y_value], dx
+    mov bx, offset finishKey
     call DrawCharacter
     pop bx
 
-    mov [speed], 1
-
+    mov [speed], 25000
     ret
 endp ResetMaze3
+
 
 Start:
     mov ax, @data
@@ -1495,9 +1998,17 @@ Start:
     mov es, ax  ; ES - Extra Segment now points to the VGA location.
                 ; Don't forget to view memory map to recollect that address.
                 ; We are now in 320x200x256.
-        
-    ; mov ah, 00h ; Set video mode.
-    ; mov al, 13h ; Mode 13h.
+
+    mov ax, 3h
+    int 10h
+
+    lea dx, [opening_message]
+    mov ah, 09h
+    int 21h
+
+    ; wait for key press
+	mov ah, 00h
+	int 16h
 
     call ResetMaze1
 
@@ -1506,13 +2017,14 @@ MainLoop:
 	int 21h
     cmp dh, [last_time]
     je Run
+
     mov [last_time], dh
     dec [time]
-    inc [total_time]
+    inc [total_first_time]
+    inc [total_second_time]
         
     call PrintInfo
     call GenerateTokens
-    ; print a variable to screen: offset saved in bp, dh - row, dl - column, bl - color. cx - text length.
     cmp [time], 0
     jne Run
 
@@ -1520,30 +2032,26 @@ MainLoop:
     inc [level]
     cmp [level], 4
     je Exit
+    
     cmp [level], 2
     jne PrintMaze3
     call ResetMaze2
     jmp Run
+    
     PrintMaze3:
-    call ResetMaze3
+        call ResetMaze3
 
     Run:
-        mov cx, [XValue]
-        mov dx, [YValue]
-        mov bx, offset finish
-        call DrawCharacter
+        mov cx, [finish_x_value]
+        mov dx, [finish_y_value]
 
         call GetInput
+        call MovePlayers
         call CheckCollision
 
-        mov cx, [word pos_x]
-        mov dx, [word pos_y]
-        mov bx, offset character
-        call DrawCharacter
-
         xor cx, cx
-        mov cl, [speed]
-        mov dx, 200
+        mov cl, 1
+        mov dx, [speed]
 	    mov ah, 86h
 	    int 15h
 
@@ -1552,18 +2060,76 @@ MainLoop:
 Exit:
     mov ax, 3h
     int 10h
-    lea dx, [end_message]  
-    mov ah,09h 
-    int 21h  
-    xor ax, ax
-    inc [total_time]
-    mov ax, [total_time]
-    call Print
-    mov cx, 1000h
-    mov dx, 1000h
-	mov ah, 86h
-	int 15h
-    mov ax, 4C00h
+
+    lea dx, [end_message_one]
+    mov ah, 09h 
     int 21h
+
+    xor ax, ax
+    mov ax, [total_first_time]
+    call Print_Numeric_Var
+
+    lea dx, [end_message_two]
+    mov ah, 09h 
+    int 21h
+
+    xor ax, ax
+    mov ax, [total_second_time]
+    call Print_Numeric_Var
+
+    mov cx, [total_first_time]
+    cmp cx, [total_second_time]
+    je Draw
+    cmp cx, [total_second_time]
+    jb Player_One_Wins
+    jmp Player_Two_Wins
+
+    Draw:
+        lea dx, [draw_message]
+        mov ah, 09h 
+        int 21h
+        jmp End_Of_Game
+    
+    Player_One_Wins:
+        lea dx, [player_one_win_message]
+        mov ah, 09h 
+        int 21h
+        jmp End_Of_Game
+
+    Player_Two_Wins:
+        lea dx, [player_two_win_message]
+        mov ah, 09h 
+        int 21h
+
+
+    End_Of_Game:
+        xor ax, ax
+        call OpenFile
+	    call ReadFile
+        call CloseFile
+
+        xor ax, ax
+        mov ax, [total_first_time]
+        call UpdateBestScore
+        xor ax, ax
+        mov ax, [total_second_time]
+        call UpdateBestScore
+
+        lea dx, [best_score_title]
+        mov ah, 09h 
+        int 21h
+
+        call OpenFile
+        call ReadFile
+        call CloseFile
+        mov ax, [word best_score_from_file]
+        call Print_Numeric_Var
+
+        mov cx, 1000h
+        mov dx, 1000h
+	    mov ah, 86h
+	    int 15h
+        mov ax, 4C00h
+        int 21h
 
 	END start
